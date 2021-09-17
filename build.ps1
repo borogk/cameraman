@@ -1,5 +1,5 @@
 # Start from clean "out" folder
-Remove-Item "$PSScriptRoot\out" -Recurse -Force
+Remove-Item "$PSScriptRoot\out" -Recurse -Force -ErrorAction Ignore
 New-Item -Path $PSScriptRoot -Name out -ItemType directory
 
 # Compile ACS scripts
