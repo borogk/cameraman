@@ -13,72 +13,72 @@ bool playing = false;
 
 function int GetCameraTid(void)
 {
-	if (cameraTid == -1)
-	{
-		cameraTid = UniqueTid();
-	}
-	
-	return cameraTid;
+    if (cameraTid == -1)
+    {
+        cameraTid = UniqueTid();
+    }
+
+    return cameraTid;
 }
 
 function int GetCameraPathTid(void)
 {
-	if (cameraPathTid == -1)
-	{
-		cameraPathTid = UniqueTid();
-	}
-	
-	return cameraPathTid;
+    if (cameraPathTid == -1)
+    {
+        cameraPathTid = UniqueTid();
+    }
+
+    return cameraPathTid;
 }
 
 // ---------------------------------------------------------------------------
 
 script "Cman_PlayInPlayer" (void)
 {
-	playing = true;
-	Delay(GetDelay());
-	ACS_NamedExecute("Cman_Play", 0);
+    playing = true;
+    Delay(GetDelay());
+    ACS_NamedExecute("Cman_Play", 0);
 }
 
 script "Cman_Play" (void)
 {
-	int pathMode = GetPathMode();
-	int speedMode = GetSpeedMode();
-	int angleMode = GetAngleMode();
-	int speed = GetSpeed();
-	bool overshoot = GetOvershoot();
-	
-	if (pathMode == PATH_MODE_LINEAR)
-	{
-		InitLinearValues(GetX0(), GetY0(), GetZ0(), GetX1(), GetY1(), GetZ1(), GetA0(), GetA1(), GetP0(), GetP1());
-	}
-	else if (pathMode == PATH_MODE_RADIAL)
-	{
-		InitRadialValues(GetRA0(), GetRA1(), GetR0(), GetR1(), GetCX0(), GetCY0(), GetCX1(), GetCY1(), GetZ0(), GetZ1(), GetA0(), GetA1(), GetP0(), GetP1());
-	}
-	else if (pathMode == PATH_MODE_BEZIER)
-	{
-		InitBezierValues(GetX0(), GetY0(), GetZ0(), GetX1(), GetY1(), GetZ1(), GetX2(), GetY2(), GetZ2(), GetA0(), GetA1(), GetP0(), GetP1());
-	}
-	
-	int t = 0.0;
-	int progress = NextValues(0, pathMode, speedMode, angleMode, speed, overshoot);
-	
-	Thing_Remove(GetCameraTid());
-	SpawnSpot("CmanCamera", 0, GetCameraTid());
-	SetActorPitch(GetCameraTid(), GetP0());
-	WarpNoCheck(GetCameraTid(), gx, gy, gz, ga, 0);
-	ChangeCamera(GetCameraTid(), false, false);
+    int pathMode = GetPathMode();
+    int speedMode = GetSpeedMode();
+    int angleMode = GetAngleMode();
+    int speed = GetSpeed();
+    bool overshoot = GetOvershoot();
 
-	if (speed > 0)
-	{
-		Delay(1);
-		while (playing && progress < 1.0)
-		{
-			t += 1.0;
-			progress = NextValues(t, pathMode, speedMode, angleMode, speed, overshoot);
-			WarpNoCheck(GetCameraTid(), gx, gy, gz, ga, gdp);
-			Delay(1);
-		}
-	}
+    if (pathMode == PATH_MODE_LINEAR)
+    {
+        InitLinearValues(GetX0(), GetY0(), GetZ0(), GetX1(), GetY1(), GetZ1(), GetA0(), GetA1(), GetP0(), GetP1());
+    }
+    else if (pathMode == PATH_MODE_RADIAL)
+    {
+        InitRadialValues(GetRA0(), GetRA1(), GetR0(), GetR1(), GetCX0(), GetCY0(), GetCX1(), GetCY1(), GetZ0(), GetZ1(), GetA0(), GetA1(), GetP0(), GetP1());
+    }
+    else if (pathMode == PATH_MODE_BEZIER)
+    {
+        InitBezierValues(GetX0(), GetY0(), GetZ0(), GetX1(), GetY1(), GetZ1(), GetX2(), GetY2(), GetZ2(), GetA0(), GetA1(), GetP0(), GetP1());
+    }
+
+    int t = 0.0;
+    int progress = NextValues(0, pathMode, speedMode, angleMode, speed, overshoot);
+
+    Thing_Remove(GetCameraTid());
+    SpawnSpot("CmanCamera", 0, GetCameraTid());
+    SetActorPitch(GetCameraTid(), GetP0());
+    WarpNoCheck(GetCameraTid(), gx, gy, gz, ga, 0);
+    ChangeCamera(GetCameraTid(), false, false);
+
+    if (speed > 0)
+    {
+        Delay(1);
+        while (playing && progress < 1.0)
+        {
+            t += 1.0;
+            progress = NextValues(t, pathMode, speedMode, angleMode, speed, overshoot);
+            WarpNoCheck(GetCameraTid(), gx, gy, gz, ga, gdp);
+            Delay(1);
+        }
+    }
 }

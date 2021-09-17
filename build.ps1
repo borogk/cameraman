@@ -4,13 +4,13 @@ New-Item -Path $PSScriptRoot -Name out -ItemType directory
 
 # Compile ACS scripts
 Get-ChildItem "$PSScriptRoot\src\acs" -Filter *.acs | Foreach-Object {
-	$name = $_.BaseName
-	$args = "$PSScriptRoot\src\acs\$name.acs", "$PSScriptRoot\out\$name.o"
-	& 'acc' $args
-	if (!$?)
-	{
-		exit
-	}
+    $name = $_.BaseName
+    $args = "$PSScriptRoot\src\acs\$name.acs", "$PSScriptRoot\out\$name.o"
+    & 'acc' $args
+    if (!$?)
+    {
+        exit
+    }
 }
 
 # Build "CameramanEditor.pk3"

@@ -2,67 +2,67 @@
 
 actor CmanCursor
 {
-	+NOGRAVITY
-	+NOCLIP
-	Scale 0.16
-	
-	States
-	{
-		Spawn:
-			BFS1 A 1 Bright
-			Loop
-	}
+    +NOGRAVITY
+    +NOCLIP
+    Scale 0.16
+
+    States
+    {
+        Spawn:
+            BFS1 A 1 Bright
+            Loop
+    }
 }
 
 actor CmanPathMarker
 {
-	+NOGRAVITY
-	+NOCLIP
-	RenderStyle "Translucent"
-	Scale 0.1
-	Alpha 0.3
-	
-	var int user_animation_delay;
-	
-	States
-	{
-		Spawn:
-			BFS1 A 1 Bright
-			Loop
-		Animated:
-			BFS1 A 1 Bright
-			{
-				A_SetTranslucent(0.1);
-				A_SetTics(user_animation_delay);
-			}
-			Goto AnimatedLoop
-		AnimatedLoop:
-			BFS1 A 1 Bright A_SetTranslucent(0.1)
-			BFS1 A 1 Bright A_SetTranslucent(0.2)
-			BFS1 A 1 Bright A_SetTranslucent(0.3)
-			BFS1 A 1 Bright A_SetTranslucent(0.4)
-			BFS1 A 1 Bright A_SetTranslucent(0.5)
-			BFS1 A 1 Bright A_SetTranslucent(0.6)
-			BFS1 A 1 Bright A_SetTranslucent(0.8)
-			BFS1 A 1 Bright A_SetTranslucent(1.0)
-			BFS1 A 1 Bright A_SetTranslucent(0.8)
-			BFS1 A 1 Bright A_SetTranslucent(0.6)
-			BFS1 A 1 Bright A_SetTranslucent(0.4)
-			BFS1 A 1 Bright A_SetTranslucent(0.2)
-			BFS1 A 10 Bright A_SetTranslucent(0.1)
-			Loop
-	}
+    +NOGRAVITY
+    +NOCLIP
+    RenderStyle "Translucent"
+    Scale 0.1
+    Alpha 0.3
+
+    var int user_animation_delay;
+
+    States
+    {
+        Spawn:
+            BFS1 A 1 Bright
+            Loop
+        Animated:
+            BFS1 A 1 Bright
+            {
+                A_SetTranslucent(0.1);
+                A_SetTics(user_animation_delay);
+            }
+            Goto AnimatedLoop
+        AnimatedLoop:
+            BFS1 A 1 Bright A_SetTranslucent(0.1)
+            BFS1 A 1 Bright A_SetTranslucent(0.2)
+            BFS1 A 1 Bright A_SetTranslucent(0.3)
+            BFS1 A 1 Bright A_SetTranslucent(0.4)
+            BFS1 A 1 Bright A_SetTranslucent(0.5)
+            BFS1 A 1 Bright A_SetTranslucent(0.6)
+            BFS1 A 1 Bright A_SetTranslucent(0.8)
+            BFS1 A 1 Bright A_SetTranslucent(1.0)
+            BFS1 A 1 Bright A_SetTranslucent(0.8)
+            BFS1 A 1 Bright A_SetTranslucent(0.6)
+            BFS1 A 1 Bright A_SetTranslucent(0.4)
+            BFS1 A 1 Bright A_SetTranslucent(0.2)
+            BFS1 A 10 Bright A_SetTranslucent(0.1)
+            Loop
+    }
 }
 
 actor CmanTempPathMarker : CmanPathMarker
 {
-	Translation 0
+    Translation 0
 }
 
 // Common with player
 
 actor CmanCamera
 {
-	+NOGRAVITY
-	+NOCLIP
+    +NOGRAVITY
+    +NOCLIP
 }

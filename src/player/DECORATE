@@ -1,5 +1,5 @@
 actor CmanCamera
 {
-	+NOGRAVITY
-	+NOCLIP
+    +NOGRAVITY
+    +NOCLIP
 }

@@ -21,10 +21,10 @@ OptionMenu "CmanOptionsMenu"
 {
     Title "Cameraman Menu"
 
-	Command "Play", "cman_play"
-	Command "Export", "cman_export"
-	Command "Warp to path", "cman_warp"
-	Command "Refresh path", "cman_refresh"
+    Command "Play", "cman_play"
+    Command "Export", "cman_export"
+    Command "Warp to path", "cman_warp"
+    Command "Refresh path", "cman_refresh"
 
     StaticText ""
     Option "Path mode", "cman_path_mode", "CmanPathModeOptionValue"
@@ -72,9 +72,9 @@ OptionMenu "CmanOptionsMenu"
     StaticText ""
     Slider "R0", "cman_r0", 1, 999999, 1, 0
     Slider "R1", "cman_r1", 1, 999999, 1, 0
-	
-	StaticText ""
+
+    StaticText ""
     StaticText "--- Misc ---", "yellow"
-	Slider "Delay (for player only)", "cman_delay", 0, 9999, 1, 0
-	Option "Overshoot at the end", "cman_overshoot", "OnOff"
+    Slider "Delay (for player only)", "cman_delay", 0, 9999, 1, 0
+    Option "Overshoot at the end", "cman_overshoot", "OnOff"
 }
