@@ -1,10 +1,11 @@
+. "$PSScriptRoot\settings.ps1"
+
 $baseArgs = '+freelook', '1', '+noclip2', '+notarget', '-file', "$PSScriptRoot\CameramanEditor.pk3", '+logfile', "$PSScriptRoot\editor.log"
 
 if ($args[0] -eq 'load')
 {
     $allArgs = $baseArgs + $args[2..($args.Length-1)]
 
-    $level = 1
     foreach ($line in Get-Content $args[1])
     {
         $match = $line | Select-String -Pattern '^([\w\d]+) = (.*)$'
@@ -13,25 +14,18 @@ if ($args[0] -eq 'load')
 
         if ($name -ne $null)
         {
-            if ($name -eq 'level')
-            {
-                $level = $value
-            }
-            else
-            {
-                $allArgs += '"+cman_{0} {1}"' -f $name, $value
-            }
+            $allArgs += '"+cman_{0} {1}"' -f $name, $value
         }
     }
 
-    $allArgs += '-warp', $level, '+pukename', 'Cman_WarpToPath'
+    $allArgs += '+pukename', 'Cman_WarpToPath'
 }
 else
 {
     $allArgs = $baseArgs + $args
 }
 
-$gzdoom = Start-Process -FilePath 'gzdoom.exe' -ArgumentList $allArgs -PassThru
+$gzdoom = Start-Process -FilePath $GzdoomPath -ArgumentList $allArgs -PassThru
 Wait-Process -Id $gzdoom.Id
 
 $exportingFile = ''

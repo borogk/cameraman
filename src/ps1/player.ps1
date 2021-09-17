@@ -1,3 +1,5 @@
+. "$PSScriptRoot\settings.ps1"
+
 $baseArgs = '-file', "$PSScriptRoot\CameramanPlayer.pk3"
 
 if ($args[0] -eq 'load')
@@ -23,5 +25,5 @@ else
     $allArgs = $baseArgs + $args
 }
 
-$gzdoom = Start-Process -FilePath 'gzdoom.exe' -ArgumentList $allArgs -PassThru
+$gzdoom = Start-Process -FilePath $GzdoomPath -ArgumentList $allArgs -PassThru
 Wait-Process -Id $gzdoom.Id
