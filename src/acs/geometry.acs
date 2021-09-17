@@ -1,0 +1,212 @@
+#library "geometry"
+
+#include "zcommon.acs"
+#import "common.acs"
+
+// Geometry path parameters
+int gx0, gy0, gz0, ga0, gp0, gra0, gr0, gcx0, gcy0;
+int gx1, gy1, gz1, ga1, gp1, gra1, gr1, gcx1, gcy1;
+int gx2, gy2, gz2;
+
+// Geometry calculation output
+int gx, gy, gz, ga, gdp;
+
+// Previous progress value
+int gprevprogress;
+
+function void InitLinearValues(int x0, int y0, int z0, int x1, int y1, int z1, int a0, int a1, int p0, int p1)
+{
+	gx0 = x0;
+	gy0 = y0;
+	gz0 = z0;
+	gx1 = x1;
+	gy1 = y1;
+	gz1 = z1;
+	ga0 = a0;
+ 	ga1 = a1;
+ 	gp0 = p0;
+ 	gp1 = p1;
+	gprevprogress = 0;
+}
+
+function void InitRadialValues(int ra0, int ra1, int r0, int r1, int cx0, int cy0, int cx1, int cy1, int z0, int z1, int a0, int a1, int p0, int p1)
+{
+	gra0 = ra0;
+	gra1 = ra1;
+	gr0 = r0;
+	gr1 = r1;
+	gcx0 = cx0;
+	gcy0 = cy0;
+	gcx1 = cx1;
+	gcy1 = cy1;
+	gz0 = z0;
+	gz1 = z1;
+	ga0 = a0;
+ 	ga1 = a1;
+ 	gp0 = p0;
+ 	gp1 = p1;
+	gprevprogress = 0;
+}
+
+function void InitBezierValues(int x0, int y0, int z0, int x1, int y1, int z1, int x2, int y2, int z2, int a0, int a1, int p0, int p1)
+{
+	gx0 = x0;
+	gy0 = y0;
+	gz0 = z0;
+	gx1 = x1;
+	gy1 = y1;
+	gz1 = z1;
+	gx2 = x2;
+	gy2 = y2;
+	gz2 = z2;
+	ga0 = a0;
+ 	ga1 = a1;
+ 	gp0 = p0;
+ 	gp1 = p1;
+	gprevprogress = 0;
+}
+
+function int NextLinearValues(int t, int speedMode, int angleMode, int speed, bool overshoot)
+{
+	int progress;
+	if (speedMode == SPEED_MODE_DISTANCE)
+	{
+		progress = FixedDiv(FixedMul(speed, t), VectorLength(gx1 - gx0, gy1 - gy0));
+	}
+	else if (speedMode == SPEED_MODE_TIME)
+	{
+		progress = FixedDiv(t, speed);
+	}
+	
+	if (overshoot || progress < 1.0)
+	{
+		gx = gx0 + FixedMul(gx1 - gx0, progress);
+		gy = gy0 + FixedMul(gy1 - gy0, progress);
+		gz = gz0 + FixedMul(gz1 - gz0, progress);
+		ga = ga0 + FixedMul(ga1 - ga0, progress);
+	}
+	else
+	{
+		gx = gx1;
+		gy = gy1;
+		gz = gz1;
+		ga = ga1;
+	}
+	
+	if (angleMode == ANGLE_MODE_RELATIVE)
+	{
+		ga += VectorAngle(gx1 - gx0, gy1 - gy0);
+	}
+	
+	gdp = FixedMul(gp1 - gp0, progress - gprevprogress);
+	
+	gprevprogress = progress;
+	return progress;
+}
+
+function int NextRadialValues(int t, int speedMode, int angleMode, int speed, bool overshoot)
+{
+	int progress;
+	if (speedMode == SPEED_MODE_DISTANCE)
+	{
+		progress = FixedDiv(FixedMul(speed, t), Abs(gra1 - gra0));
+	}
+	else if (speedMode == SPEED_MODE_TIME)
+	{
+		progress = FixedDiv(t, speed);
+	}
+
+	int ra, r, cx, cy;
+	if (overshoot || progress < 1.0)
+	{
+		ra = gra0 + FixedMul(gra1 - gra0, progress);
+		r = gr0 + FixedMul(gr1 - gr0, progress);
+		cx = gcx0 + FixedMul(gcx1 - gcx0, progress);
+		cy = gcy0 + FixedMul(gcy1 - gcy0, progress);		
+		gz = gz0 + FixedMul(gz1 - gz0, progress);
+		ga = ga0 + FixedMul(ga1 - ga0, progress);
+	}
+	else
+	{
+		ra = gra1;
+		r = gr1;
+		cx = gcx1;
+		cy = gcy1;
+		gz = gz1;
+		ga = ga1;
+	}
+	
+	gx = cx + FixedMul(Cos(ra), r);
+	gy = cy + FixedMul(Sin(ra), r);
+	
+	if (angleMode == ANGLE_MODE_RELATIVE)
+	{
+		ga += VectorAngle(cx - gx, cy - gy);
+	}
+	
+	gdp = FixedMul(gp1 - gp0, progress - gprevprogress);
+	
+	gprevprogress = progress;
+	return progress;
+}
+
+function int NextBezierValues(int t, int angleMode, int speed, bool overshoot)
+{
+	int progress = FixedDiv(t, speed);
+	
+	if (overshoot || progress < 1.0)
+	{
+		int p = progress;
+		int p2 = FixedMul(p, p);
+		int omp = 1.0 - p;
+		int omp2 = FixedMul(omp, omp);
+		
+		gx = gx1 + FixedMul(omp2, gx0 - gx1) + FixedMul(p2, gx2 - gx1);
+		gy = gy1 + FixedMul(omp2, gy0 - gy1) + FixedMul(p2, gy2 - gy1);
+		gz = gz1 + FixedMul(omp2, gz0 - gz1) + FixedMul(p2, gz2 - gz1);
+		ga = ga0 + FixedMul(ga1 - ga0, progress);
+	}
+	else
+	{
+		gx = gx2;
+		gy = gy2;
+		gz = gz2;
+		ga = ga1;
+	}
+	
+	if (angleMode == ANGLE_MODE_RELATIVE)
+	{
+		p = gprevprogress;
+		p2 = FixedMul(p, p);
+		omp = 1.0 - p;
+		omp2 = FixedMul(omp, omp);
+		
+		int prevx = gx1 + FixedMul(omp2, gx0 - gx1) + FixedMul(p2, gx2 - gx1);
+		int prevy = gy1 + FixedMul(omp2, gy0 - gy1) + FixedMul(p2, gy2 - gy1);
+	
+		ga += VectorAngle(gx - prevx, gy - prevy);
+	}
+	
+	gdp = FixedMul(gp1 - gp0, progress - gprevprogress);
+	
+	gprevprogress = progress;
+	return progress;
+}
+
+function int NextValues(int t, int pathMode, int speedMode, int angleMode, int speed, bool overshoot)
+{
+	if (pathMode == PATH_MODE_LINEAR)
+	{
+		return NextLinearValues(t, speedMode, angleMode, speed, overshoot);
+	}
+	else if (pathMode == PATH_MODE_RADIAL)
+	{
+		return NextRadialValues(t, speedMode, angleMode, speed, overshoot);
+	}
+	else if (pathMode == PATH_MODE_BEZIER)
+	{
+		return NextBezierValues(t, angleMode, speed, overshoot);
+	}
+	
+	return 1.0;
+}

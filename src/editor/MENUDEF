@@ -1,0 +1,80 @@
+OptionValue "CmanPathModeOptionValue"
+{
+    0, "Linear"
+    1, "Radial"
+    2, "Bezier"
+}
+
+OptionValue "CmanSpeedModeOptionValue"
+{
+    0, "Distance"
+    1, "Time"
+}
+
+OptionValue "CmanAngleModeOptionValue"
+{
+    0, "Relative"
+    1, "Absolute"
+}
+
+OptionMenu "CmanOptionsMenu"
+{
+    Title "Cameraman Menu"
+
+	Command "Play", "cman_play"
+	Command "Export", "cman_export"
+	Command "Warp to path", "cman_warp"
+	Command "Refresh path", "cman_refresh"
+
+    StaticText ""
+    Option "Path mode", "cman_path_mode", "CmanPathModeOptionValue"
+
+    StaticText ""
+    StaticText "--- Speed ---", "yellow"
+    Option "Speed mode", "cman_speed_mode", "CmanSpeedModeOptionValue"
+    Slider "Speed", "cman_speed", 0, 1000, 1, 3
+
+    StaticText ""
+    StaticText "--- Angle ---", "yellow"
+    Option "Angle mode", "cman_angle_mode", "CmanAngleModeOptionValue"
+    Slider "A0", "cman_a0", -10, 10, 0.01, 2
+    Slider "A1", "cman_a1", -10, 10, 0.01, 2
+
+    StaticText ""
+    StaticText "--- Pitch ---", "yellow"
+    Slider "P0", "cman_p0", -0.25, 0.25, 0.01, 2
+    Slider "P1", "cman_p1", -0.25, 0.25, 0.01, 2
+
+    StaticText ""
+    StaticText "--- XYZ position ---", "yellow"
+    Slider "X0", "cman_x0", -999999, 999999, 1, 0
+    Slider "Y0", "cman_y0", -999999, 999999, 1, 0
+    Slider "Z0", "cman_z0", -999999, 999999, 1, 0
+    StaticText ""
+    Slider "X1", "cman_x1", -999999, 999999, 1, 0
+    Slider "Y1", "cman_y1", -999999, 999999, 1, 0
+    Slider "Z1", "cman_z1", -999999, 999999, 1, 0
+    StaticText ""
+    Slider "X2", "cman_x2", -999999, 999999, 1, 0
+    Slider "Y2", "cman_y2", -999999, 999999, 1, 0
+    Slider "Z2", "cman_z2", -999999, 999999, 1, 0
+
+    StaticText ""
+    StaticText "--- Radial mode values ---", "yellow"
+    Slider "RA0", "cman_ra0", -10, 10, 0.01, 2
+    Slider "RA1", "cman_ra1", -10, 10, 0.01, 2
+    StaticText ""
+    Slider "CX0", "cman_cx0", -999999, 999999, 1, 0
+    Slider "CY0", "cman_cy0", -999999, 999999, 1, 0
+    StaticText ""
+    Slider "CX1", "cman_cx1", -999999, 999999, 1, 0
+    Slider "CY1", "cman_cy1", -999999, 999999, 1, 0
+    StaticText ""
+    Slider "R0", "cman_r0", 1, 999999, 1, 0
+    Slider "R1", "cman_r1", 1, 999999, 1, 0
+	
+	StaticText ""
+    StaticText "--- Misc ---", "yellow"
+	Slider "Delay (for player only)", "cman_delay", 0, 9999, 1, 0
+	Option "Overshoot at the end", "cman_overshoot", "OnOff"
+}

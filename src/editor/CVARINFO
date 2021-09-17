@@ -1,0 +1,38 @@
+// Editor-specific
+
+nosave float cman_editor_cursor_distance = 50.0;
+nosave float cman_editor_cursor_sensitivity = 10.0;
+nosave float cman_editor_linear_path_resolution = 10.0;
+nosave float cman_editor_radial_path_resolution = 0.01;
+nosave float cman_editor_bezier_path_resolution = 100.0;
+nosave int cman_editor_path_animation_delay = 2;
+
+// Common with player
+
+nosave int cman_path_mode = 0;
+nosave int cman_speed_mode = 0;
+nosave int cman_angle_mode = 0;
+nosave int cman_delay = 0;
+nosave float cman_speed = 0.0;
+nosave bool cman_overshoot = false;
+nosave float cman_x0 = 0.0;
+nosave float cman_x1 = 0.0;
+nosave float cman_x2 = 0.0;
+nosave float cman_y0 = 0.0;
+nosave float cman_y1 = 0.0;
+nosave float cman_y2 = 0.0;
+nosave float cman_z0 = 0.0;
+nosave float cman_z1 = 0.0;
+nosave float cman_z2 = 0.0;
+nosave float cman_a0 = 0.0;
+nosave float cman_a1 = 0.0;
+nosave float cman_p0 = 0;
+nosave float cman_p1 = 0;
+nosave float cman_ra0 = 0.0;
+nosave float cman_ra1 = 0.0;
+nosave float cman_cx0 = 0.0;
+nosave float cman_cx1 = 0.0;
+nosave float cman_cy0 = 0.0;
+nosave float cman_cy1 = 0.0;
+nosave float cman_r0 = 0.0;
+nosave float cman_r1 = 0.0;

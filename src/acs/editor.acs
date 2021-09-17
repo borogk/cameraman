@@ -1,0 +1,498 @@
+#library "editor"
+
+#include "zcommon.acs"
+#import "player.acs"
+#import "geometry.acs"
+#import "common.acs"
+
+int cursorTid = -1;
+int pathMarkerTid = -1;
+int tempPathMarkerTid = -1;
+
+int drawMode = PATH_MODE_LINEAR;
+int curIndex = 0;
+int curX[8];
+int curY[8];
+int curZ[8];
+bool curLocked = false;
+
+int exportCount = 0;
+
+#define DRAW_MODE_LABEL_ID    1
+#define DRAW_MODE_VALUE_ID    2
+#define CURSOR_LOCK_LABEL_ID  3
+#define CURSOR_LOCK_VALUE_ID  4
+#define CURSOR_POS_LABEL_ID   5
+#define CURSOR_POS_X_ID   	  6
+#define CURSOR_POS_Y_ID   	  7
+#define CURSOR_POS_Z_ID   	  8
+#define ANGLE_LABEL_ID   	  9
+#define ANGLE_VALUE_ID   	  10
+#define ANGLE_VALUE2_ID   	  11
+#define PITCH_LABEL_ID   	  12
+#define PITCH_VALUE_ID   	  13
+#define ONE_TIC_MESSAGE_DURATION    1873
+
+// Editor CVARS
+
+function int GetCursorDistance(void)
+{
+	return Max(GetCVar("cman_editor_cursor_distance"), 0.0);
+}
+
+function void SetCursorDistance(int value)
+{
+	SetCVar("cman_editor_cursor_distance", value);
+}
+
+function int GetCursorSensitivity(void)
+{
+	return Max(GetCVar("cman_editor_cursor_sensitivity"), 0.001);
+}
+
+function int GetLinearPathResolution(void)
+{
+	return Max(GetCVar("cman_editor_linear_path_resolution"), 1.0);
+}
+
+function int GetRadialPathResolution(void)
+{
+	return Max(GetCVar("cman_editor_radial_path_resolution"), 0.001);
+}
+
+function int GetBezierPathResolution(void)
+{
+	return Max(GetCVar("cman_editor_bezier_path_resolution"), 0.001);
+}
+
+function int GetPathAnimationDelay(void)
+{
+	return Max(GetCVar("cman_editor_path_animation_delay"), 0);
+}
+
+// Editor TIDs
+
+function int GetCursorTid(void)
+{
+	if (cursorTid == -1)
+	{
+		cursorTid = UniqueTid();
+	}
+	
+	return cursorTid;
+}
+
+function int GetPathMarkerTid(void)
+{
+	if (pathMarkerTid == -1)
+	{
+		pathMarkerTid = UniqueTid();
+	}
+	
+	return pathMarkerTid;
+}
+
+function int GetTempPathMarkerTid(void)
+{
+	if (tempPathMarkerTid == -1)
+	{
+		tempPathMarkerTid = UniqueTid();
+	}
+	
+	return tempPathMarkerTid;
+}
+
+// ---------------------------------------------------------------------------
+
+function void SpawnPathMarker(bool final, int animationDelay)
+{
+	if (final)
+	{
+		int tid = UniqueTid();
+		Spawn("CmanPathMarker", gx, gy, gz, tid, 0);
+		SetUserVariable(tid, "user_animation_delay", animationDelay);
+		SetActorState(tid, "Animated", true);
+		Thing_ChangeTid(tid, GetPathMarkerTid());
+	}
+	else
+	{
+		Spawn("CmanTempPathMarker", gx, gy, gz, GetTempPathMarkerTid(), 0);
+	}	
+}
+
+function void RespawnPathAfterGeometryInit(bool final, int pathMode)
+{
+	Thing_Remove(final ? GetPathMarkerTid() : GetTempPathMarkerTid());	
+	
+	int speedMode, resolution;
+	if (pathMode == PATH_MODE_LINEAR)
+	{
+		speedMode = SPEED_MODE_DISTANCE;
+		resolution = GetLinearPathResolution();
+	}
+	else if (pathMode == PATH_MODE_RADIAL)
+	{
+		speedMode = SPEED_MODE_DISTANCE;
+		resolution = GetRadialPathResolution();
+	}
+	else if (pathMode == PATH_MODE_BEZIER)
+	{
+		speedMode = SPEED_MODE_TIME;
+		resolution = GetBezierPathResolution();
+	}
+	
+	int animationDelay = 0;
+	int t = 0.0;
+	int progress;
+	do
+	{
+		progress = NextValues(t, pathMode, speedMode, 0, resolution, false);
+		animationDelay += GetPathAnimationDelay();		
+		SpawnPathMarker(final, animationDelay);
+		t += 1.0;
+	}
+	while (progress < 1.0);
+}
+
+function void InitFinalGeometryAndRespawnPath(void)
+{
+	int pathMode = GetPathMode();
+	if (pathMode == PATH_MODE_LINEAR)
+	{
+		InitLinearValues(GetX0(), GetY0(), GetZ0(), GetX1(), GetY1(), GetZ1(), 0, 0, 0, 0);
+	}
+	else if (pathMode == PATH_MODE_RADIAL)
+	{
+		InitRadialValues(GetRA0(), GetRA1(), GetR0(), GetR1(), GetCX0(), GetCY0(), GetCX1(), GetCY1(), GetZ0(), GetZ1(), 0, 0, 0, 0);
+	}
+	else if (pathMode == PATH_MODE_BEZIER)
+	{
+		InitBezierValues(GetX0(), GetY0(), GetZ0(), GetX1(), GetY1(), GetZ1(), GetX2(), GetY2(), GetZ2(), 0, 0, 0, 0);
+	}
+	
+	RespawnPathAfterGeometryInit(true, pathMode);
+}
+
+function void MoveLockedCursor(int diff)
+{
+	int dx = GetActorX(0) - curX[curIndex];
+	int dy = GetActorY(0) - curY[curIndex];
+	int dz = GetActorZ(0) + 32.0 - curZ[curIndex];
+
+	int dist = VectorLength(VectorLength(dx, dy), dz);
+	if (diff > 0.0 || dist > diff)
+	{
+		int a = VectorAngle(dx, dy);
+		int p = VectorAngle(dist, dz);
+		
+		curX[curIndex] = curX[curIndex] - FixedMul(Cos(a), diff);
+		curY[curIndex] = curY[curIndex] - FixedMul(Sin(a), diff);
+		curZ[curIndex] = curZ[curIndex] - FixedMul(Sin(p), diff);
+	}
+}
+
+function str RoundAngleStr(int a, int n)
+{
+	return StrLeft(StrParam(f:a), n + (a < 0 ? 3 : 2));
+}
+
+// ---------------------------------------------------------------------------
+
+script "Cman_InitEditor" ENTER
+{
+	InitFinalGeometryAndRespawnPath();
+}
+
+script "Cman_CursorLoop" ENTER
+{
+	Spawn("CmanCursor", GetActorX(0), GetActorY(0), GetActorZ(0), GetCursorTid(), 0);
+
+	while (true)
+	{
+		int d = GetCursorDistance();
+		int a = GetActorAngle(0);
+		int p = GetActorPitch(0);
+		int x = GetActorX(0) + FixedMul(Cos(a), d);
+		int y = GetActorY(0) + FixedMul(Sin(a), d);
+		int z = GetActorZ(0) + 32.0 - FixedMul(Sin(p), d);
+		
+		if (!curLocked)
+		{
+			curX[curIndex] = x;
+			curY[curIndex] = y;
+			curZ[curIndex] = z;
+		}
+		
+		WarpNoCheck(GetCursorTid(), curX[curIndex], curY[curIndex], curZ[curIndex], 0, 0); 
+		
+		if ((drawMode == PATH_MODE_LINEAR || drawMode == PATH_MODE_BEZIER) && curIndex == 1)
+		{
+			InitLinearValues(curX[0], curY[0], curZ[0], curX[1], curY[1], curZ[1], 0, 0, 0, 0);
+			RespawnPathAfterGeometryInit(false, PATH_MODE_LINEAR);
+		}
+		else if (drawMode == PATH_MODE_RADIAL && curIndex > 0)
+		{
+			int r0 = VectorLength(curX[1] - curX[0], curY[1] - curY[0]);
+			int r1 = curIndex >= 2 ? VectorLength(curX[2] - curX[0], curY[2] - curY[0]) : r0;
+			
+			InitRadialValues(0.0, 1.0, r0, r1, curX[0], curY[0], curX[0], curY[0], curZ[0], curZ[1], 0, 0, 0, 0);
+			RespawnPathAfterGeometryInit(false, PATH_MODE_RADIAL);
+		}
+		else if (drawMode == PATH_MODE_BEZIER && curIndex == 2)
+		{
+			InitBezierValues(curX[0], curY[0], curZ[0], curX[2], curY[2], curZ[2], curX[1], curY[1], curZ[1], 0, 0, 0, 0);
+			RespawnPathAfterGeometryInit(false, PATH_MODE_BEZIER);
+		}
+
+        if (!playing)
+        {
+            HudMessage(s:"Cursor XYZ"; HUDMSG_PLAIN, CURSOR_POS_LABEL_ID, CR_GREY, -0.01, 0.54, ONE_TIC_MESSAGE_DURATION);
+			HudMessage(s:"X = ", d:(curX[curIndex] >> 16); HUDMSG_PLAIN, CURSOR_POS_X_ID, CR_GREEN, -0.01, 0.58, ONE_TIC_MESSAGE_DURATION);
+			HudMessage(s:"Y = ", d:(curY[curIndex] >> 16); HUDMSG_PLAIN, CURSOR_POS_Y_ID, CR_GREEN, -0.01, 0.61, ONE_TIC_MESSAGE_DURATION);
+			HudMessage(s:"Z = ", d:(curZ[curIndex] >> 16); HUDMSG_PLAIN, CURSOR_POS_Z_ID, CR_GREEN, -0.01, 0.64, ONE_TIC_MESSAGE_DURATION);
+			
+			HudMessage(s:"Angle"; HUDMSG_PLAIN, ANGLE_LABEL_ID, CR_GREY, -0.01, 0.71, ONE_TIC_MESSAGE_DURATION);
+			HudMessage(s:RoundAngleStr(a, 3); HUDMSG_PLAIN, ANGLE_VALUE_ID, CR_YELLOW, -0.01, 0.75, ONE_TIC_MESSAGE_DURATION);
+			HudMessage(s:RoundAngleStr(a - 1.0, 3); HUDMSG_PLAIN, ANGLE_VALUE2_ID, CR_YELLOW, -0.12, 0.75, ONE_TIC_MESSAGE_DURATION);
+			
+			HudMessage(s:"Pitch"; HUDMSG_PLAIN, PITCH_LABEL_ID, CR_GREY, -0.01, 0.82, ONE_TIC_MESSAGE_DURATION);
+			HudMessage(s:RoundAngleStr(p, 3); HUDMSG_PLAIN, PITCH_VALUE_ID, CR_YELLOW, -0.01, 0.86, ONE_TIC_MESSAGE_DURATION);
+			
+			str drawModeStr = "";
+			if (drawMode == PATH_MODE_LINEAR)
+			{
+				drawModeStr = "LINEAR";
+			}
+			else if (drawMode == PATH_MODE_RADIAL)
+			{
+				drawModeStr = "RADIAL";
+			}
+			else if (drawMode == PATH_MODE_BEZIER)
+			{
+				drawModeStr = "BEZIER";
+			}
+			
+			HudMessage(s:"Draw mode:"; HUDMSG_PLAIN, DRAW_MODE_LABEL_ID, CR_GREY, -0.01, 0.94, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:drawModeStr; HUDMSG_PLAIN, DRAW_MODE_VALUE_ID, CR_GREEN, -0.22, 0.94, ONE_TIC_MESSAGE_DURATION);
+
+            str curLockedStr;
+            int curLockedColor;
+            if (curLocked)
+            {
+                curLockedStr = "ON";
+                curLockedColor = CR_GREEN;
+            }
+            else
+            {
+                curLockedStr = "OFF";
+                curLockedColor = CR_RED;
+            }
+
+            HudMessage(s:"Cursor lock:"; HUDMSG_PLAIN, CURSOR_LOCK_LABEL_ID, CR_GREY, -0.01, 0.99, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:curLockedStr; HUDMSG_PLAIN, CURSOR_LOCK_VALUE_ID, curLockedColor, -0.22, 0.99, ONE_TIC_MESSAGE_DURATION);
+        }
+
+		Delay(1);
+	}	
+}
+
+script "Cman_MoveCursorForward" (void)
+{
+	if (!curLocked)
+	{
+		SetCursorDistance(GetCursorDistance() + GetCursorSensitivity());
+	}
+	else
+	{
+		MoveLockedCursor(GetCursorSensitivity());
+	}
+}
+
+script "Cman_MoveCursorBack" (void)
+{
+	if (!curLocked)
+	{
+		SetCursorDistance(GetCursorDistance() - GetCursorSensitivity());
+	}
+	else
+	{
+		MoveLockedCursor(-GetCursorSensitivity());
+	}
+}
+
+script "Cman_UseCursor" (void)
+{
+	curIndex++;
+	curX[curIndex] = curX[curIndex - 1]; 
+	curY[curIndex] = curY[curIndex - 1];
+	curZ[curIndex] = curZ[curIndex - 1];
+
+	if (drawMode == PATH_MODE_LINEAR && curIndex >= 2)
+	{
+		SetPathMode(PATH_MODE_LINEAR);
+		SetX0(curX[0]);
+		SetY0(curY[0]);
+		SetZ0(curZ[0]);
+		SetX1(curX[1]);
+		SetY1(curY[1]);
+		SetZ1(curZ[1]);
+		
+		curIndex = 0;
+		InitFinalGeometryAndRespawnPath();
+		Thing_Remove(GetTempPathMarkerTid());
+	}
+	else if (drawMode == PATH_MODE_RADIAL && curIndex >= 3)
+	{
+		SetPathMode(PATH_MODE_RADIAL);
+		SetCX0(curX[0]);
+		SetCY0(curY[0]);
+		SetCX1(curX[0]);
+		SetCY1(curY[0]);
+		SetZ0(curZ[0]);
+		SetZ1(curZ[1]);
+		SetR0(VectorLength(curX[1] - curX[0], curY[1] - curY[0]));
+		SetR1(VectorLength(curX[2] - curX[0], curY[2] - curY[0]));
+		SetRA0(0.0);
+		SetRA1(1.0);
+		
+		curIndex = 0;
+		InitFinalGeometryAndRespawnPath();
+		Thing_Remove(GetTempPathMarkerTid());
+	}
+	else if (drawMode == PATH_MODE_BEZIER && curIndex >= 3)
+	{
+		SetPathMode(PATH_MODE_BEZIER);
+		SetX0(curX[0]);
+		SetY0(curY[0]);
+		SetZ0(curZ[0]);
+		SetX1(curX[2]);
+		SetY1(curY[2]);
+		SetZ1(curZ[2]);
+		SetX2(curX[1]);
+		SetY2(curY[1]);
+		SetZ2(curZ[1]);
+		
+		curIndex = 0;
+		InitFinalGeometryAndRespawnPath();
+		Thing_Remove(GetTempPathMarkerTid());
+	}
+}
+
+script "Cman_SwitchDrawingMode" (void)
+{
+	curIndex = 0;
+	Thing_Remove(GetTempPathMarkerTid());
+	
+	if (drawMode == PATH_MODE_LINEAR)
+	{
+		drawMode = PATH_MODE_RADIAL;
+	}
+	else if (drawMode == PATH_MODE_RADIAL)
+	{
+		drawMode = PATH_MODE_BEZIER;
+	}
+	else if (drawMode == PATH_MODE_BEZIER)
+	{
+		drawMode = PATH_MODE_LINEAR;
+	}
+}
+
+script "Cman_ToggleCursorLock" (void)
+{
+	curLocked = !curLocked;
+}
+
+script "Cman_Export" (void)
+{
+	int pathMode = GetPathMode();
+
+	Log(s:"--- BEGIN CAMERAMAN ---");
+	Log(s:"path_mode = ", d:pathMode);
+	if (pathMode == PATH_MODE_LINEAR || pathMode == PATH_MODE_RADIAL)
+	{
+		Log(s:"speed_mode = ", d:GetSpeedMode());
+	}
+	Log(s:"angle_mode = ", d:GetAngleMode());
+	Log(s:"delay = ", d:GetDelay());
+	Log(s:"speed = ", f:GetSpeed());
+	Log(s:"overshoot = ", f:GetOvershoot());
+	if (pathMode == PATH_MODE_LINEAR || pathMode == PATH_MODE_BEZIER)
+	{
+		Log(s:"x0 = ", f:GetX0());
+		Log(s:"x1 = ", f:GetX1());
+	}
+	if (pathMode == PATH_MODE_BEZIER)
+	{
+		Log(s:"x2 = ", f:GetX2());
+	}
+	if (pathMode == PATH_MODE_LINEAR || pathMode == PATH_MODE_BEZIER)
+	{
+		Log(s:"y0 = ", f:GetY0());
+		Log(s:"y1 = ", f:GetY1());
+	}
+	if (pathMode == PATH_MODE_BEZIER)
+	{
+		Log(s:"y2 = ", f:GetY2());
+	}
+	Log(s:"z0 = ", f:GetZ0());
+	Log(s:"z1 = ", f:GetZ1());
+	if (pathMode == PATH_MODE_BEZIER)
+	{
+		Log(s:"z2 = ", f:GetZ2());
+	}
+	Log(s:"a0 = ", f:GetA0());
+	Log(s:"a1 = ", f:GetA1());
+	Log(s:"p0 = ", f:GetP0());
+	Log(s:"p1 = ", f:GetP1());	
+	if (pathMode == PATH_MODE_RADIAL)
+	{
+		Log(s:"ra0 = ", f:GetRA0());
+		Log(s:"ra1 = ", f:GetRA1());
+		Log(s:"cx0 = ", f:GetCX0());
+		Log(s:"cx1 = ", f:GetCX1());
+		Log(s:"cy0 = ", f:GetCY0());
+		Log(s:"cy1 = ", f:GetCY1());
+		Log(s:"r0 = ", f:GetR0());
+		Log(s:"r1 = ", f:GetR1());
+	}
+	Log(s:"--- END CAMERAMAN ---");
+	
+	Print(s:"Exported camera parameters ", d:++exportCount);
+}
+
+script "Cman_WarpToPath" (void)
+{
+	SetActorVelocity(0, 0, 0, 0, false, false);
+
+	int pathMode = GetPathMode();
+	if (pathMode == PATH_MODE_LINEAR || pathMode == PATH_MODE_BEZIER)
+	{
+		WarpNoCheck(0, GetX0(), GetY0(), GetZ0(), VectorAngle(GetX1() - GetX0(), GetY1() - GetY0()), 0);
+	}
+	else if (pathMode == PATH_MODE_RADIAL)
+	{
+		WarpNoCheck(0, GetCX0(), GetCY0(), GetZ0(), GetRA0(), 0);
+	}
+}
+
+script "Cman_PlayInEditor" (void)
+{
+	playing = !playing;
+	
+	InitFinalGeometryAndRespawnPath();
+	SetActorFlag(GetPathMarkerTid(), "INVISIBLE", playing);
+
+	if (playing)
+	{		
+		ACS_NamedExecute("Cman_Play", 0);
+	}
+	else
+	{
+		ChangeCamera(0, false, false);		
+	}
+}
+
+script "Cman_RefreshEditor" (void)
+{
+	InitFinalGeometryAndRespawnPath();
+}

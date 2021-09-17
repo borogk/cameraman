@@ -1,0 +1,318 @@
+#library "common"
+
+#include "zcommon.acs"
+
+#libdefine PATH_MODE_LINEAR	0
+#libdefine PATH_MODE_RADIAL	1
+#libdefine PATH_MODE_BEZIER	2
+
+#libdefine SPEED_MODE_DISTANCE	0
+#libdefine SPEED_MODE_TIME		1
+
+#libdefine ANGLE_MODE_RELATIVE	0
+#libdefine ANGLE_MODE_ABSOLUTE	1
+
+function void WarpNoCheck(int tid, int x, int y, int z, int a, int dp)
+{
+	Warp(tid, x, y, z, a, WARPF_MOVEPTR | WARPF_ABSOLUTEPOSITION | WARPF_ABSOLUTEANGLE | WARPF_INTERPOLATE | WARPF_NOCHECKPOSITION, "", false, 0, 0, dp);
+}
+
+function int Max(int a, int b)
+{
+	return a > b ? a : b;
+}
+
+function int Min(int a, int b)
+{
+	return a < b ? a : b;
+}
+
+function int Abs(int v)
+{
+	return v < 0 ? -v : v;
+}
+
+// Common CVARS
+
+function int GetPathMode(void)
+{
+	int mode = GetCVar("cman_path_mode");
+	if (mode < PATH_MODE_LINEAR || mode > PATH_MODE_BEZIER)
+	{
+		return PATH_MODE_LINEAR;
+	}
+	
+	return mode;
+}
+
+function void SetPathMode(int mode)
+{
+	SetCVar("cman_path_mode", mode);
+}
+
+function int GetSpeedMode(void)
+{
+	int mode = GetCVar("cman_speed_mode");
+	if (mode < SPEED_MODE_DISTANCE || mode > SPEED_MODE_TIME)
+	{
+		return SPEED_MODE_DISTANCE;
+	}
+	
+	return mode;
+}
+
+function void SetSpeedMode(int value)
+{
+	SetCVar("cman_speed_mode", value);
+}
+
+function int GetAngleMode(void)
+{
+	int mode = GetCVar("cman_angle_mode");
+	if (mode < ANGLE_MODE_RELATIVE || mode > ANGLE_MODE_ABSOLUTE)
+	{
+		return ANGLE_MODE_RELATIVE;
+	}
+	
+	return mode;
+}
+
+function void SetAngleMode(int value)
+{
+	SetCVar("cman_angle_mode", value);
+}
+
+function int GetSpeed(void)
+{
+	return Max(GetCVar("cman_speed"), 0);
+}
+
+function void SetSpeed(int value)
+{
+	SetCVar("cman_speed", value);
+}
+
+function int GetOvershoot(void)
+{
+	return Max(GetCVar("cman_overshoot"), 0);
+}
+
+function void SetOvershoot(int value)
+{
+	SetCVar("cman_overshoot", value);
+}
+
+function int GetDelay(void)
+{
+	return Max(GetCVar("cman_delay"), 1);
+}
+
+function int GetX0(void)
+{
+	return GetCVar("cman_x0");
+}
+
+function void SetX0(int value)
+{
+	SetCVar("cman_x0", value);
+}
+
+function int GetX1(void)
+{
+	return GetCVar("cman_x1");
+}
+
+function void SetX1(int value)
+{
+	SetCVar("cman_x1", value);
+}
+
+function int GetX2(void)
+{
+	return GetCVar("cman_x2");
+}
+
+function void SetX2(int value)
+{
+	SetCVar("cman_x2", value);
+}
+
+function int GetY0(void)
+{
+	return GetCVar("cman_y0");
+}
+
+function void SetY0(int value)
+{
+	SetCVar("cman_y0", value);
+}
+
+function int GetY1(void)
+{
+	return GetCVar("cman_y1");
+}
+
+function void SetY1(int value)
+{
+	SetCVar("cman_y1", value);
+}
+
+function int GetY2(void)
+{
+	return GetCVar("cman_y2");
+}
+
+function void SetY2(int value)
+{
+	SetCVar("cman_y2", value);
+}
+
+function int GetZ0(void)
+{
+	return GetCVar("cman_z0");
+}
+
+function void SetZ0(int value)
+{
+	SetCVar("cman_z0", value);
+}
+
+function int GetZ1(void)
+{
+	return GetCVar("cman_z1");
+}
+
+function void SetZ1(int value)
+{
+	SetCVar("cman_z1", value);
+}
+
+function int GetZ2(void)
+{
+	return GetCVar("cman_z2");
+}
+
+function void SetZ2(int value)
+{
+	SetCVar("cman_z2", value);
+}
+
+function int GetA0(void)
+{
+	return GetCVar("cman_a0");
+}
+
+function void SetA0(int value)
+{
+	SetCVar("cman_a0", value);
+}
+
+function int GetA1(void)
+{
+	return GetCVar("cman_a1");
+}
+
+function void SetA1(int value)
+{
+	SetCVar("cman_a1", value);
+}
+
+function int GetP0(void)
+{
+	return Min(Max(GetCVar("cman_p0"), -0.25), 0.25);
+}
+
+function void SetP0(int value)
+{
+	SetCVar("cman_p0", value);
+}
+
+function int GetP1(void)
+{
+	return Min(Max(GetCVar("cman_p1"), -0.25), 0.25);
+}
+
+function void SetP1(int value)
+{
+	SetCVar("cman_p1", value);
+}
+
+function int GetRA0(void)
+{
+	return GetCVar("cman_ra0");
+}
+
+function void SetRA0(int value)
+{
+	SetCVar("cman_ra0", value);
+}
+
+function int GetRA1(void)
+{
+	return GetCVar("cman_ra1");
+}
+
+function void SetRA1(int value)
+{
+	SetCVar("cman_ra1", value);
+}
+
+function int GetCX0(void)
+{
+	return GetCVar("cman_cx0");
+}
+
+function void SetCX0(int value)
+{
+	SetCVar("cman_cx0", value);
+}
+
+function int GetCX1(void)
+{
+	return GetCVar("cman_cx1");
+}
+
+function void SetCX1(int value)
+{
+	SetCVar("cman_cx1", value);
+}
+
+function int GetCY0(void)
+{
+	return GetCVar("cman_cy0");
+}
+
+function void SetCY0(int value)
+{
+	SetCVar("cman_cy0", value);
+}
+
+function int GetCY1(void)
+{
+	return GetCVar("cman_cy1");
+}
+
+function void SetCY1(int value)
+{
+	SetCVar("cman_cy1", value);
+}
+
+function int GetR0(void)
+{
+	return GetCVar("cman_r0");
+}
+
+function void SetR0(int value)
+{
+	SetCVar("cman_r0", value);
+}
+
+function int GetR1(void)
+{
+	return GetCVar("cman_r1");
+}
+
+function void SetR1(int value)
+{
+	SetCVar("cman_r1", value);
+}
