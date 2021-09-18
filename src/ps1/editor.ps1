@@ -1,6 +1,8 @@
-. "$PSScriptRoot\settings.ps1"
+. (Join-Path $PSScriptRoot 'settings.ps1')
 
-$baseArgs = '+freelook', '1', '+noclip2', '+notarget', '-file', "$PSScriptRoot\CameramanEditor.pk3", '+logfile', "$PSScriptRoot\editor.log"
+$editorLogPath = Join-Path $PSScriptRoot 'editor.log'
+
+$baseArgs = '+freelook', '1', '+noclip2', '+notarget', '-file', (Join-Path $PSScriptRoot 'CameramanEditor.pk3'), '+logfile', $editorLogPath
 
 if ($args[0] -eq 'load')
 {
@@ -29,7 +31,7 @@ $gzdoom = Start-Process -FilePath $GzdoomPath -ArgumentList $allArgs -PassThru
 Wait-Process -Id $gzdoom.Id
 
 $exportingFile = ''
-foreach ($line in Get-Content "$PSScriptRoot\editor.log")
+foreach ($line in Get-Content $editorLogPath)
 {
     if ($exportingFile -ne '')
     {
@@ -58,8 +60,8 @@ foreach ($line in Get-Content "$PSScriptRoot\editor.log")
             }
         }
 
-        $exportingFile = "$PSScriptRoot\export-{0:0000}.cman" -f ($maxNum + 1)
+        $exportingFile = Join-Path $PSScriptRoot ("export-{0:0000}.cman" -f ($maxNum + 1))
     }
 }
 
-Remove-Item "$PSScriptRoot\editor.log" -Force
+Remove-Item $editorLogPath -Force

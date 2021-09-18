@@ -1,6 +1,6 @@
-. "$PSScriptRoot\settings.ps1"
+. (Join-Path $PSScriptRoot 'settings.ps1')
 
-$baseArgs = '-file', "$PSScriptRoot\CameramanPlayer.pk3"
+$baseArgs = '-file', (Join-Path $PSScriptRoot 'CameramanPlayer.pk3')
 
 if ($args[0] -eq 'load')
 {
