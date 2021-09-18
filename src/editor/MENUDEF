@@ -21,6 +21,9 @@ OptionMenu "CmanOptionsMenu"
 {
     Title "Cameraman Menu"
 
+    StaticText "Cameraman Editor v1.0", "darkgrey"
+
+    StaticText ""
     Command "Play", "cman_play"
     Command "Export", "cman_export"
     Command "Warp to path", "cman_warp"
