@@ -12,7 +12,7 @@ if ($args[0] -eq 'load')
         $name = $match.Matches.Groups[1].Value
         $value = $match.Matches.Groups[2].Value
 
-        if ($name -ne $null)
+        if ($null -ne $name)
         {
             $allArgs += '"+cman_{0} {1}"' -f $name, $value
         }
@@ -29,7 +29,7 @@ $gzdoom = Start-Process -FilePath $GzdoomPath -ArgumentList $allArgs -PassThru
 Wait-Process -Id $gzdoom.Id
 
 $exportingFile = ''
-foreach ($line in Get-Content "$PSScriptRoot\editor.log") 
+foreach ($line in Get-Content "$PSScriptRoot\editor.log")
 {
     if ($exportingFile -ne '')
     {
@@ -39,7 +39,7 @@ foreach ($line in Get-Content "$PSScriptRoot\editor.log")
         }
         else
         {
-            Write-Host "Exported $exportingFile"
+            Write-Output "Exported $exportingFile"
             $exportingFile = ''
         }
     }

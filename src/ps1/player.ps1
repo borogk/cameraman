@@ -12,7 +12,7 @@ if ($args[0] -eq 'load')
         $name = $match.Matches.Groups[1].Value
         $value = $match.Matches.Groups[2].Value
 
-        if ($name -ne $null)
+        if ($null -ne $name)
         {
             $allArgs += '"+cman_{0} {1}"' -f $name, $value
         }
