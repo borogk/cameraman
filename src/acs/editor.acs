@@ -18,19 +18,6 @@ bool curLocked = false;
 
 int exportCount = 0;
 
-#define DRAW_MODE_LABEL_ID    1
-#define DRAW_MODE_VALUE_ID    2
-#define CURSOR_LOCK_LABEL_ID  3
-#define CURSOR_LOCK_VALUE_ID  4
-#define CURSOR_POS_LABEL_ID   5
-#define CURSOR_POS_X_ID   	  6
-#define CURSOR_POS_Y_ID   	  7
-#define CURSOR_POS_Z_ID   	  8
-#define ANGLE_LABEL_ID   	  9
-#define ANGLE_VALUE_ID   	  10
-#define ANGLE_VALUE2_ID   	  11
-#define PITCH_LABEL_ID   	  12
-#define PITCH_VALUE_ID   	  13
 #define ONE_TIC_MESSAGE_DURATION    1873
 
 // Editor CVARS
@@ -42,7 +29,7 @@ function int GetCursorDistance(void)
 
 function void SetCursorDistance(int value)
 {
-    SetCVar("cman_editor_cursor_distance", value);
+    SetCVar("cman_editor_cursor_distance", Max(value, 0.0));
 }
 
 function int GetCursorSensitivity(void)
@@ -246,17 +233,18 @@ script "Cman_CursorLoop" ENTER
 
         if (!playing)
         {
-            HudMessage(s:"Cursor XYZ"; HUDMSG_PLAIN, CURSOR_POS_LABEL_ID, CR_GREY, -0.01, 0.54, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:"X = ", d:(curX[curIndex] >> 16); HUDMSG_PLAIN, CURSOR_POS_X_ID, CR_GREEN, -0.01, 0.58, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:"Y = ", d:(curY[curIndex] >> 16); HUDMSG_PLAIN, CURSOR_POS_Y_ID, CR_GREEN, -0.01, 0.61, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:"Z = ", d:(curZ[curIndex] >> 16); HUDMSG_PLAIN, CURSOR_POS_Z_ID, CR_GREEN, -0.01, 0.64, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:"Cursor"; HUDMSG_PLAIN, 0, CR_GREY, -0.01, 0.51, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:"X = ", d:(curX[curIndex] >> 16); HUDMSG_PLAIN, 0, CR_GREEN, -0.01, 0.55, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:"Y = ", d:(curY[curIndex] >> 16); HUDMSG_PLAIN, 0, CR_GREEN, -0.01, 0.58, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:"Z = ", d:(curZ[curIndex] >> 16); HUDMSG_PLAIN, 0, CR_GREEN, -0.01, 0.61, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:"Distance = ", d:(d >> 16); HUDMSG_PLAIN, 0, curLocked ? CR_DARKGREY : CR_GREEN, -0.01, 0.64, ONE_TIC_MESSAGE_DURATION);
 
-            HudMessage(s:"Angle"; HUDMSG_PLAIN, ANGLE_LABEL_ID, CR_GREY, -0.01, 0.71, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:RoundAngleStr(a, 3); HUDMSG_PLAIN, ANGLE_VALUE_ID, CR_YELLOW, -0.01, 0.75, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:RoundAngleStr(a - 1.0, 3); HUDMSG_PLAIN, ANGLE_VALUE2_ID, CR_YELLOW, -0.12, 0.75, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:"Angle"; HUDMSG_PLAIN, 0, CR_GREY, -0.01, 0.71, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:RoundAngleStr(a, 3); HUDMSG_PLAIN, 0, CR_YELLOW, -0.01, 0.75, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:RoundAngleStr(a - 1.0, 3); HUDMSG_PLAIN, 0, CR_YELLOW, -0.12, 0.75, ONE_TIC_MESSAGE_DURATION);
 
-            HudMessage(s:"Pitch"; HUDMSG_PLAIN, PITCH_LABEL_ID, CR_GREY, -0.01, 0.82, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:RoundAngleStr(p, 3); HUDMSG_PLAIN, PITCH_VALUE_ID, CR_YELLOW, -0.01, 0.86, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:"Pitch"; HUDMSG_PLAIN, 0, CR_GREY, -0.01, 0.82, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:RoundAngleStr(p, 3); HUDMSG_PLAIN, 0, CR_YELLOW, -0.01, 0.86, ONE_TIC_MESSAGE_DURATION);
 
             str drawModeStr = "";
             if (drawMode == PATH_MODE_LINEAR)
@@ -272,8 +260,8 @@ script "Cman_CursorLoop" ENTER
                 drawModeStr = "BEZIER";
             }
 
-            HudMessage(s:"Draw mode:"; HUDMSG_PLAIN, DRAW_MODE_LABEL_ID, CR_GREY, -0.01, 0.94, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:drawModeStr; HUDMSG_PLAIN, DRAW_MODE_VALUE_ID, CR_GREEN, -0.22, 0.94, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:"Draw mode:"; HUDMSG_PLAIN, 0, CR_GREY, -0.01, 0.94, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:drawModeStr; HUDMSG_PLAIN, 0, CR_GREEN, -0.22, 0.94, ONE_TIC_MESSAGE_DURATION);
 
             str curLockedStr;
             int curLockedColor;
@@ -288,8 +276,8 @@ script "Cman_CursorLoop" ENTER
                 curLockedColor = CR_RED;
             }
 
-            HudMessage(s:"Cursor lock:"; HUDMSG_PLAIN, CURSOR_LOCK_LABEL_ID, CR_GREY, -0.01, 0.99, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:curLockedStr; HUDMSG_PLAIN, CURSOR_LOCK_VALUE_ID, curLockedColor, -0.22, 0.99, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:"Cursor lock:"; HUDMSG_PLAIN, 0, CR_GREY, -0.01, 0.99, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:curLockedStr; HUDMSG_PLAIN, 0, curLockedColor, -0.22, 0.99, ONE_TIC_MESSAGE_DURATION);
         }
 
         Delay(1);
