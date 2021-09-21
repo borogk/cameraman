@@ -27,6 +27,7 @@ Get-ChildItem $srcAcsPath -Filter *.acs | Foreach-Object {
 New-Item -Path $outEditorPath -Name 'acs' -ItemType directory
 Copy-Item (Join-Path $outPath '*.o') -Destination (Join-Path $outEditorPath 'acs')
 Copy-Item (Join-Path $srcEditorPath '*') -Destination $outEditorPath -Recurse
+Copy-Item (Join-Path $PSScriptRoot 'LICENSE') -Destination $outEditorPath
 Compress-Archive -Path (Join-Path $outEditorPath '*') -DestinationPath (Join-Path $outPath 'CameramanEditor.zip') -Force
 Rename-Item -Path (Join-Path $outPath 'CameramanEditor.zip') -NewName 'CameramanEditor.pk3'
 
@@ -36,11 +37,15 @@ Copy-Item (Join-Path $outPath 'player.o') -Destination (Join-Path $outPlayerPath
 Copy-Item (Join-Path $outPath 'geometry.o') -Destination (Join-Path $outPlayerPath 'acs')
 Copy-Item (Join-Path $outPath 'common.o') -Destination (Join-Path $outPlayerPath 'acs')
 Copy-Item (Join-Path $srcPlayerPath '*') -Destination $outPlayerPath
+Copy-Item (Join-Path $PSScriptRoot 'LICENSE') -Destination $outPlayerPath
 Compress-Archive -Path (Join-Path $outPlayerPath '*') -DestinationPath (Join-Path $outPath 'CameramanPlayer.zip') -Force
 Rename-Item -Path (Join-Path $outPath 'CameramanPlayer.zip') -NewName 'CameramanPlayer.pk3'
+
+# Clean the output folder from the archive sources
+Remove-Item (Join-Path $outPath '*') -Recurse -Exclude *.pk3
 
 # Copy helper PowerShell scripts over to output
 Copy-Item (Join-Path $srcPs1Path '*') -Destination $outPath
 
-# Cleanup the output folder
-Remove-Item (Join-Path $outPath '*') -Recurse -Exclude *.pk3, *.ps1
+# Copy LICENSE to output
+Copy-Item (Join-Path $PSScriptRoot 'LICENSE') -Destination $outPath

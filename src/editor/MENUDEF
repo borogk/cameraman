@@ -21,9 +21,6 @@ OptionMenu "CmanOptionsMenu"
 {
     Title "Cameraman Menu"
 
-    StaticText "Cameraman Editor v1.0", "darkgrey"
-
-    StaticText ""
     Command "Play", "cman_play"
     Command "Export", "cman_export"
     Command "Warp to path", "cman_warp"
@@ -80,4 +77,9 @@ OptionMenu "CmanOptionsMenu"
     StaticText "Misc", "yellow"
     Slider "Delay (for player only)", "cman_delay", 0, 9999, 1, 0
     Option "Overshoot at the end", "cman_overshoot", "OnOff"
+
+    StaticText ""
+    StaticText "-----------------------------------------", "darkgrey"
+    StaticText "Cameraman Editor v1.0", "darkgrey"
+    StaticText "https://github.com/borogk/zdoom-cameraman", "darkgrey"
 }

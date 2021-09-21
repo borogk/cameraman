@@ -12,10 +12,6 @@ Possible use cases:
 - capture Doom gameplay from 3rd person
 - _other creative usages you may think of_
 
-### Video tutorial
-
-Check out beginner's [[TBD] tutorial on YouTube](). It gives a good idea on what the **Cameraman** mod can do.
-
 ### Documentation
 
 - [Chapter 1 - Installation](docs/ch01.installation.md)
