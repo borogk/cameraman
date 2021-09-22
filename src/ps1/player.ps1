@@ -6,7 +6,7 @@ $baseArgs = '-file', "`"$playerPk3Path`""
 
 if ($args[0] -eq 'load')
 {
-    $allArgs = $baseArgs + $args[1..($args.Length-1)]
+    $allArgs = $baseArgs + $args[2..($args.Length-1)]
 
     foreach ($line in Get-Content $args[1])
     {
