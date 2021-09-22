@@ -15,7 +15,9 @@ New-Item -Path $PSScriptRoot -Name 'out' -ItemType directory
 # Compile ACS scripts
 Get-ChildItem $srcAcsPath -Filter *.acs | Foreach-Object {
     $name = $_.BaseName
-    $accArgs = (Join-Path $srcAcsPath "$name.acs"), (Join-Path $outPath "$name.o")
+    $srcFilePath = Join-Path $srcAcsPath "$name.acs"
+    $destFilePath = Join-Path $outPath "$name.o"
+    $accArgs = "`"$srcFilePath`"", "`"$destFilePath`""
     & 'acc' $accArgs
     if (!$?)
     {
