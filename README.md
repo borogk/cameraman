@@ -17,8 +17,11 @@ Possible use cases:
 - [Chapter 1 - Installation](docs/ch01.installation.md)
 - [Chapter 2 - Quick start](docs/ch02.quick-start.md)
 - [Chapter 3 - Editor](docs/ch03.editor.md)
-- [Chapter 4 - Player](docs/ch04.player.md)
-- [Chapter 5 - For developers](docs/ch05.developers.md)
+- [Chapter 4.1 - Linear mode](docs/ch04.01.linear.md)
+- [Chapter 4.2 - Radial mode](docs/ch04.02.radial.md)
+- [Chapter 4.3 - Bezier mode](docs/ch04.03.bezier.md)
+- [Chapter 5 - Player](docs/ch05.player.md)
+- [Chapter 6 - For developers](docs/ch06.developers.md)
 
 ### Author
 
