@@ -1,8 +1,9 @@
 . (Join-Path $PSScriptRoot 'settings.ps1')
 
 $editorLogPath = Join-Path $PSScriptRoot 'editor.log'
+$editorPk3Path = Join-Path $PSScriptRoot 'CameramanEditor.pk3'
 
-$baseArgs = '+freelook', '1', '+noclip2', '+notarget', '-file', (Join-Path $PSScriptRoot 'CameramanEditor.pk3'), '+logfile', $editorLogPath
+$baseArgs = '+freelook', '1', '+noclip2', '+notarget', '-file', "`"$editorPk3Path`"", '+logfile', "`"$editorLogPath`""
 
 if ($args[0] -eq 'load')
 {
