@@ -22,6 +22,7 @@ Possible use cases:
 - [Chapter 4.3 - Bezier mode](docs/ch04.03.bezier.md)
 - [Chapter 5 - Player](docs/ch05.player.md)
 - [Chapter 6 - For developers](docs/ch06.developers.md)
+- [Appendix A - List of CVARs](docs/ap01.cvars.md)
 
 ### Author
 
