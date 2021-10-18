@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-gzdoom="/home/morb/games/zdoom/gzdoom" #"/path/to/gzdoom"
+gzdoom="gzdoom" #"/path/to/gzdoom"
 
 loadcam() {
 awk '{a=a"+cman_"$1." "$3." "}END{print a}' $1
