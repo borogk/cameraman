@@ -3,7 +3,7 @@ WD=`dirname $0`
 . ${WD}/include.sh
 PK3="${WD}/CameramanEditor.pk3"
 LOG="${WD}/editor.log"
-ARGS="+freelook 1 +noclip 2 +notarget -file $PK3 +logname $LOG "
+ARGS="+freelook 1 +noclip 2 +notarget -file $PK3 +logfile $LOG "
 
 case $1 in
   load)
