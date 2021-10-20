@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-gzdoom="gzdoom" #"/path/to/gzdoom"
-
 loadcam() {
 awk '{a=a"+cman_"$1." "$3." "}END{print a}' $1
 }
