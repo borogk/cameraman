@@ -77,6 +77,8 @@ OptionMenu "CmanOptionsMenu"
     StaticText "Misc", "yellow"
     Slider "Delay (for player only)", "cman_delay", 0, 9999, 1, 0
     Option "Overshoot at the end", "cman_overshoot", "OnOff"
+    Option "Warp player to the camera position", "cman_warp_player", "OnOff"
+    Option "Hide player while the camera is active", "cman_hide_player", "OnOff"
 
     StaticText ""
     StaticText "-----------------------------------------", "darkgrey"

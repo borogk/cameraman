@@ -47,6 +47,8 @@ script "Cman_Play" (void)
     int angleMode = GetAngleMode();
     int speed = GetSpeed();
     bool overshoot = GetOvershoot();
+    bool warpPlayer = GetWarpPlayer();
+    bool hidePlayer = GetHidePlayer();
 
     if (pathMode == PATH_MODE_LINEAR)
     {
@@ -68,6 +70,10 @@ script "Cman_Play" (void)
     SpawnSpot("CmanCamera", 0, GetCameraTid());
     SetActorPitch(GetCameraTid(), GetP0());
     WarpNoCheck(GetCameraTid(), gx, gy, gz, ga, 0);
+    if (warpPlayer)
+    {
+        WarpNoCheck(0, gx, gy, gz, ga, 0);
+    }
     ChangeCamera(GetCameraTid(), false, false);
 
     if (speed > 0)
@@ -78,6 +84,10 @@ script "Cman_Play" (void)
             t += 1.0;
             progress = NextValues(t, pathMode, speedMode, angleMode, speed, overshoot);
             WarpNoCheck(GetCameraTid(), gx, gy, gz, ga, gdp);
+            if (warpPlayer)
+            {
+                WarpNoCheck(0, gx, gy, gz, ga, gdp);
+            }
             Delay(1);
         }
     }
