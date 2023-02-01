@@ -403,9 +403,9 @@ script "Cman_Export" (void)
     Log(s:"angle_mode = ", d:GetAngleMode());
     Log(s:"delay = ", d:GetDelay());
     Log(s:"speed = ", f:GetSpeed());
-    Log(s:"overshoot = ", f:GetOvershoot());
-    Log(s:"warp_player = ", f:GetWarpPlayer());
-    Log(s:"hide_player = ", f:GetHidePlayer());
+    Log(s:"overshoot = ", d:(GetOvershoot() ? 1 : 0));
+    Log(s:"warp_player = ", d:(GetWarpPlayer() ? 1 : 0));
+    Log(s:"hide_player = ", d:(GetHidePlayer() ? 1 : 0));
     if (pathMode == PATH_MODE_LINEAR || pathMode == PATH_MODE_BEZIER)
     {
         Log(s:"x0 = ", f:GetX0());
