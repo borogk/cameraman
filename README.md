@@ -25,6 +25,8 @@ Possible use cases:
 - [Appendix A - List of CVARs](docs/ap01.cvars.md)
 - [Appendix B - Usage with bash](docs/ap02.bash.md)
 
-### Author
+### Author and contributors
 
-Created by **borogk** in 2021.
+Originally created by **borogk** in 2021.
+
+Contributed by **[m0rb](https://github.com/m0rb)**.
