@@ -102,6 +102,26 @@ function void SetOvershoot(int value)
     SetCVar("cman_overshoot", value);
 }
 
+function int GetWarpPlayer(void)
+{
+    return Max(GetCVar("cman_warp_player"), 0);
+}
+
+function void SetWarpPlayer(int value)
+{
+    SetCVar("cman_warp_player", value);
+}
+
+function int GetHidePlayer(void)
+{
+    return Max(GetCVar("cman_hide_player"), 0);
+}
+
+function void SetHidePlayer(int value)
+{
+    SetCVar("cman_hide_player", value);
+}
+
 function int GetDelay(void)
 {
     return Max(GetCVar("cman_delay"), 1);

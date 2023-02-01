@@ -404,6 +404,8 @@ script "Cman_Export" (void)
     Log(s:"delay = ", d:GetDelay());
     Log(s:"speed = ", f:GetSpeed());
     Log(s:"overshoot = ", f:GetOvershoot());
+    Log(s:"warp_player = ", f:GetWarpPlayer());
+    Log(s:"hide_player = ", f:GetHidePlayer());
     if (pathMode == PATH_MODE_LINEAR || pathMode == PATH_MODE_BEZIER)
     {
         Log(s:"x0 = ", f:GetX0());
@@ -469,6 +471,18 @@ script "Cman_PlayInEditor" (void)
 
     InitFinalGeometryAndRespawnPath();
     SetActorFlag(GetPathMarkerTid(), "INVISIBLE", playing);
+    SetActorFlag(GetCursorTid(), "INVISIBLE", playing);
+    if (playing)
+    {
+        if (GetHidePlayer())
+        {
+            SetActorFlag(0, "INVISIBLE", true);
+        }
+    }
+    else
+    {
+        SetActorFlag(0, "INVISIBLE", false);
+    }
 
     if (playing)
     {
