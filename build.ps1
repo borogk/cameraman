@@ -3,6 +3,7 @@ $srcAcsPath = Join-Path $srcPath 'acs'
 $srcEditorPath = Join-Path $srcPath 'editor'
 $srcPlayerPath = Join-Path $srcPath 'player'
 $srcPs1Path = Join-Path $srcPath 'ps1'
+$srcBashPath = Join-Path $srcPath 'bash'
 
 $outPath = Join-Path $PSScriptRoot 'out'
 $outEditorPath = Join-Path $outPath 'editor'
@@ -46,8 +47,9 @@ Rename-Item -Path (Join-Path $outPath 'CameramanPlayer.zip') -NewName 'Cameraman
 # Clean the output folder from the archive sources
 Remove-Item (Join-Path $outPath '*') -Recurse -Exclude *.pk3
 
-# Copy helper PowerShell scripts over to output
+# Copy helper PowerShell and bash scripts over to output
 Copy-Item (Join-Path $srcPs1Path '*') -Destination $outPath
+Copy-Item (Join-Path $srcBashPath '*') -Destination $outPath
 
 # Copy LICENSE to output
 Copy-Item (Join-Path $PSScriptRoot 'LICENSE') -Destination $outPath
