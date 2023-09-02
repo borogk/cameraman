@@ -31,7 +31,7 @@ OptionMenu "CmanOptionsMenu"
 
     StaticText ""
     StaticText "Speed", "yellow"
-    Option "Speed mode", "cman_speed_mode", "CmanSpeedModeOptionValue"
+    Option "Speed mode (Linear and Radial only)", "cman_speed_mode", "CmanSpeedModeOptionValue"
     Slider "Speed", "cman_speed", 0, 1000, 1, 3
 
     StaticText ""
@@ -79,6 +79,7 @@ OptionMenu "CmanOptionsMenu"
     Option "Overshoot at the end", "cman_overshoot", "OnOff"
     Option "Warp player to the camera position", "cman_warp_player", "OnOff"
     Option "Hide player while the camera is active", "cman_hide_player", "OnOff"
+    Slider "Angle smoothing (Bezier + relative angles only)", "cman_ga_buffer_len", 1, 1024, 1, 0
 
     StaticText ""
     StaticText "-----------------------------------------", "darkgrey"

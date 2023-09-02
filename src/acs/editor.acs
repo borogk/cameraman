@@ -133,7 +133,7 @@ function void RespawnPathAfterGeometryInit(bool final, int pathMode)
     int progress;
     do
     {
-        progress = NextValues(t, pathMode, speedMode, 0, resolution, false);
+        progress = NextValues(t, pathMode, speedMode, 0, resolution, false, 1);
         animationDelay += GetPathAnimationDelay();
         SpawnPathMarker(final, animationDelay);
         t += 1.0;

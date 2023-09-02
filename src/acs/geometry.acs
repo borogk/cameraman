@@ -11,8 +11,11 @@ int gx2, gy2, gz2;
 // Geometry calculation output
 int gx, gy, gz, ga, gdp;
 
+// Angle buffer
+int gaBuffer[1024], gaBufferIndex, gaBufferSum;
+
 // Previous progress value
-int gprevprogress;
+int prevProgress;
 
 function void InitLinearValues(int x0, int y0, int z0, int x1, int y1, int z1, int a0, int a1, int p0, int p1)
 {
@@ -26,7 +29,9 @@ function void InitLinearValues(int x0, int y0, int z0, int x1, int y1, int z1, i
     ga1 = a1;
     gp0 = p0;
     gp1 = p1;
-    gprevprogress = 0;
+    gaBufferIndex = 0;
+    gaBufferSum = 0;
+    prevProgress = 0;
 }
 
 function void InitRadialValues(int ra0, int ra1, int r0, int r1, int cx0, int cy0, int cx1, int cy1, int z0, int z1, int a0, int a1, int p0, int p1)
@@ -45,7 +50,9 @@ function void InitRadialValues(int ra0, int ra1, int r0, int r1, int cx0, int cy
     ga1 = a1;
     gp0 = p0;
     gp1 = p1;
-    gprevprogress = 0;
+    gaBufferIndex = 0;
+    gaBufferSum = 0;
+    prevProgress = 0;
 }
 
 function void InitBezierValues(int x0, int y0, int z0, int x1, int y1, int z1, int x2, int y2, int z2, int a0, int a1, int p0, int p1)
@@ -63,7 +70,9 @@ function void InitBezierValues(int x0, int y0, int z0, int x1, int y1, int z1, i
     ga1 = a1;
     gp0 = p0;
     gp1 = p1;
-    gprevprogress = 0;
+    gaBufferIndex = 0;
+    gaBufferSum = 0;
+    prevProgress = 0;
 }
 
 function int NextLinearValues(int t, int speedMode, int angleMode, int speed, bool overshoot)
@@ -98,9 +107,6 @@ function int NextLinearValues(int t, int speedMode, int angleMode, int speed, bo
         ga += VectorAngle(gx1 - gx0, gy1 - gy0);
     }
 
-    gdp = FixedMul(gp1 - gp0, progress - gprevprogress);
-
-    gprevprogress = progress;
     return progress;
 }
 
@@ -144,9 +150,6 @@ function int NextRadialValues(int t, int speedMode, int angleMode, int speed, bo
         ga += VectorAngle(cx - gx, cy - gy);
     }
 
-    gdp = FixedMul(gp1 - gp0, progress - gprevprogress);
-
-    gprevprogress = progress;
     return progress;
 }
 
@@ -176,7 +179,7 @@ function int NextBezierValues(int t, int angleMode, int speed, bool overshoot)
 
     if (angleMode == ANGLE_MODE_RELATIVE)
     {
-        p = gprevprogress;
+        p = FixedDiv(t - 1.0, speed);
         p2 = FixedMul(p, p);
         omp = 1.0 - p;
         omp2 = FixedMul(omp, omp);
@@ -187,13 +190,10 @@ function int NextBezierValues(int t, int angleMode, int speed, bool overshoot)
         ga += VectorAngle(gx - prevx, gy - prevy);
     }
 
-    gdp = FixedMul(gp1 - gp0, progress - gprevprogress);
-
-    gprevprogress = progress;
     return progress;
 }
 
-function int NextValues(int t, int pathMode, int speedMode, int angleMode, int speed, bool overshoot)
+function int NextValuesUnbuffered(int t, int pathMode, int speedMode, int angleMode, int speed, bool overshoot)
 {
     if (pathMode == PATH_MODE_LINEAR)
     {
@@ -209,4 +209,66 @@ function int NextValues(int t, int pathMode, int speedMode, int angleMode, int s
     }
 
     return 1.0;
+}
+
+function void NextBufferValues(int t, int pathMode, int speedMode, int angleMode, int speed, int gaBufferLen)
+{
+    int nextBufferT = t + 1.0 * (gaBufferLen / 2);
+
+    if (t == 0)
+    {
+        // Fill the whole buffer
+
+        gaBufferSum = 0;
+        int bufferT = nextBufferT;
+        for (int i = gaBufferLen - 1; i >= 0; i--)
+        {
+            NextValuesUnbuffered(bufferT, pathMode, speedMode, angleMode, speed, true);
+            gaBuffer[i] = ga;
+            gaBufferSum += ga;
+            bufferT -= 1.0;
+        }
+    }
+    else
+    {
+        // Update only the buffer's difference
+
+        NextValuesUnbuffered(nextBufferT, pathMode, speedMode, angleMode, speed, true);
+        gaBufferSum -= gaBuffer[gaBufferIndex];
+        gaBufferSum += ga;
+        gaBuffer[gaBufferIndex] = ga;
+    }
+
+    // Advance the cyclic buffer index
+    gaBufferIndex++;
+    if (gaBufferIndex == gaBufferLen)
+    {
+        gaBufferIndex = 0;
+    }
+}
+
+function int NextValues(int t, int pathMode, int speedMode, int angleMode, int speed, bool overshoot, int gaBufferLen)
+{
+    bool angleBufferingNeeded = gaBufferLen > 1 && pathMode == PATH_MODE_BEZIER && angleMode == ANGLE_MODE_RELATIVE;
+
+    // Calculate angle buffer data first to not mess with the output below
+    if (angleBufferingNeeded)
+    {
+        NextBufferValues(t, pathMode, speedMode, angleMode, speed, gaBufferLen);
+    }
+
+    // Calculate next positional and angle values, this should output gx, gy, gz, ga
+    int progress = NextValuesUnbuffered(t, pathMode, speedMode, angleMode, speed, overshoot);
+
+    // Adjust the angle using the buffer if needed
+    if (angleBufferingNeeded)
+    {
+        ga = FixedDiv(gaBufferSum, (gaBufferLen << 16));
+    }
+
+    // Calculate the next pitch value difference
+    gdp = FixedMul(gp1 - gp0, progress - prevProgress);
+
+    prevProgress = progress;
+    return progress;
 }

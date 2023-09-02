@@ -14,7 +14,14 @@
 
 function void WarpNoCheck(int tid, int x, int y, int z, int a, int dp)
 {
-    Warp(tid, x, y, z, a, WARPF_MOVEPTR | WARPF_ABSOLUTEPOSITION | WARPF_ABSOLUTEANGLE | WARPF_INTERPOLATE | WARPF_NOCHECKPOSITION, "", false, 0, 0, dp);
+    int flags =
+        WARPF_MOVEPTR |
+        WARPF_ABSOLUTEPOSITION |
+        WARPF_ABSOLUTEANGLE |
+        WARPF_INTERPOLATE |
+        WARPF_NOCHECKPOSITION;
+
+    Warp(tid, x, y, z, a, flags, "", false, 0, 0, dp);
 }
 
 function int Max(int a, int b)
@@ -120,6 +127,16 @@ function int GetHidePlayer(void)
 function void SetHidePlayer(int value)
 {
     SetCVar("cman_hide_player", value);
+}
+
+function int GetAngleBufferLen(void)
+{
+    return Max(GetCVar("cman_ga_buffer_len"), 1);
+}
+
+function void SetAngleBufferLen(int value)
+{
+    SetCVar("cman_ga_buffer_len", value);
 }
 
 function int GetDelay(void)
