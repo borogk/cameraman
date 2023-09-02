@@ -406,6 +406,7 @@ script "Cman_Export" (void)
     Log(s:"overshoot = ", d:(GetOvershoot() ? 1 : 0));
     Log(s:"warp_player = ", d:(GetWarpPlayer() ? 1 : 0));
     Log(s:"hide_player = ", d:(GetHidePlayer() ? 1 : 0));
+    Log(s:"ga_buffer_len = ", d:GetAngleBufferLen());
     if (pathMode == PATH_MODE_LINEAR || pathMode == PATH_MODE_BEZIER)
     {
         Log(s:"x0 = ", f:GetX0());

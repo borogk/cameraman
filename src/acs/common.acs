@@ -131,7 +131,7 @@ function void SetHidePlayer(int value)
 
 function int GetAngleBufferLen(void)
 {
-    return Max(GetCVar("cman_ga_buffer_len"), 1);
+    return Min(Max(GetCVar("cman_ga_buffer_len"), 1), 1024);
 }
 
 function void SetAngleBufferLen(int value)
