@@ -506,6 +506,7 @@ script "Cman_UseCursor" (void)
         SetP0(curP[0]);
         SetP1(curP[1]);
         SetAngleMode(ANGLE_MODE_ABSOLUTE);
+        SetOvershoot(false);
 
         curIndex = 0;
         InitFinalGeometryAndRespawnPath();
