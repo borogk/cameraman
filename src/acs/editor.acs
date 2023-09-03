@@ -208,6 +208,9 @@ script "Cman_CursorLoop" ENTER
 
     while (true)
     {
+        SetActorFlag(GetCursorTid(), "INVISIBLE", playing || drawMode == DRAW_MODE_POINT_AND_SHOOT);
+        SetActorProperty(GetCursorTid(), APROP_StencilColor, curLocked ? 0xFFFF00 : 0x00FF00);
+
         int d = GetCursorDistance();
         int a = GetActorAngle(0);
         int p = GetActorPitch(0);
@@ -222,14 +225,6 @@ script "Cman_CursorLoop" ENTER
                 curX[curIndex] = x + FixedMul(Cos(a), d);
                 curY[curIndex] = y + FixedMul(Sin(a), d);
                 curZ[curIndex] = z - FixedMul(Sin(p), d);
-
-                SetActorFlag(GetCursorTid(), "INVISIBLE", false);
-                SetActorProperty(GetCursorTid(), APROP_StencilColor, 0x00FF00);
-            }
-            else
-            {
-                SetActorFlag(GetCursorTid(), "INVISIBLE", false);
-                SetActorProperty(GetCursorTid(), APROP_StencilColor, 0xFFFF00);
             }
 
             WarpNoCheck(GetCursorTid(), curX[curIndex], curY[curIndex], curZ[curIndex], 0, 0);
@@ -241,8 +236,6 @@ script "Cman_CursorLoop" ENTER
             curZ[curIndex] = z - 8.0;
             curA[curIndex] = a;
             curP[curIndex] = p;
-
-            SetActorFlag(GetCursorTid(), "INVISIBLE", true);
         }
 
         if ((drawMode == DRAW_MODE_LINEAR || drawMode == DRAW_MODE_BEZIER) && curIndex == 1)
