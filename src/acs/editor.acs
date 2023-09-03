@@ -176,7 +176,7 @@ function void MoveLockedCursor(int diff)
 {
     int dx = GetActorX(0) - curX[curIndex];
     int dy = GetActorY(0) - curY[curIndex];
-    int dz = GetActorZ(0) + 32.0 - curZ[curIndex];
+    int dz = GetActorZ(0) + GetActorViewHeight(0) - curZ[curIndex];
 
     int dist = VectorLength(VectorLength(dx, dy), dz);
     if (diff > 0.0 || dist > diff)
@@ -213,7 +213,7 @@ script "Cman_CursorLoop" ENTER
         int p = GetActorPitch(0);
         int x = GetActorX(0);
         int y = GetActorY(0);
-        int z = GetActorZ(0) + 32.0;
+        int z = GetActorZ(0) + GetActorViewHeight(0);
 
         if (drawMode != DRAW_MODE_POINT_AND_SHOOT)
         {
@@ -238,7 +238,7 @@ script "Cman_CursorLoop" ENTER
         {
             curX[curIndex] = x;
             curY[curIndex] = y;
-            curZ[curIndex] = z;
+            curZ[curIndex] = z - 8.0;
             curA[curIndex] = a;
             curP[curIndex] = p;
 
