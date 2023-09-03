@@ -17,6 +17,7 @@ nosave float cman_speed = 1.0;
 nosave bool cman_overshoot = false;
 nosave bool cman_warp_player = false;
 nosave bool cman_hide_player = false;
+nosave int cman_ga_buffer_len = 128;
 nosave float cman_x0 = 0.0;
 nosave float cman_x1 = 0.0;
 nosave float cman_x2 = 0.0;

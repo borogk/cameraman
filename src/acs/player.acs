@@ -49,6 +49,7 @@ script "Cman_Play" (void)
     bool overshoot = GetOvershoot();
     bool warpPlayer = GetWarpPlayer();
     bool hidePlayer = GetHidePlayer();
+    int gaBufferLen = GetAngleBufferLen();
 
     if (pathMode == PATH_MODE_LINEAR)
     {
@@ -64,7 +65,7 @@ script "Cman_Play" (void)
     }
 
     int t = 0.0;
-    int progress = NextValues(0, pathMode, speedMode, angleMode, speed, overshoot);
+    int progress = NextValues(0, pathMode, speedMode, angleMode, speed, overshoot, gaBufferLen);
 
     Thing_Remove(GetCameraTid());
     SpawnSpot("CmanCamera", 0, GetCameraTid());
@@ -82,7 +83,7 @@ script "Cman_Play" (void)
         while (playing && progress < 1.0)
         {
             t += 1.0;
-            progress = NextValues(t, pathMode, speedMode, angleMode, speed, overshoot);
+            progress = NextValues(t, pathMode, speedMode, angleMode, speed, overshoot, gaBufferLen);
             WarpNoCheck(GetCameraTid(), gx, gy, gz, ga, gdp);
             if (warpPlayer)
             {
