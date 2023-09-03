@@ -75,6 +75,10 @@ script "Cman_Play" (void)
     {
         WarpNoCheck(0, gx, gy, gz, ga, 0);
     }
+    if (hidePlayer)
+    {
+        SetActorFlag(0, "INVISIBLE", true);
+    }
     ChangeCamera(GetCameraTid(), false, false);
 
     if (speed > 0)
