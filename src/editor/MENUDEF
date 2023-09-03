@@ -31,7 +31,7 @@ OptionMenu "CmanOptionsMenu"
 
     StaticText ""
     StaticText "Speed", "yellow"
-    Option "Speed mode (Linear and Radial only)", "cman_speed_mode", "CmanSpeedModeOptionValue"
+    Option "Speed mode", "cman_speed_mode", "CmanSpeedModeOptionValue"
     Slider "Speed", "cman_speed", 0, 1000, 1, 3
 
     StaticText ""
