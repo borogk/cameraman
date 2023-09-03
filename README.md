@@ -20,6 +20,7 @@ Possible use cases:
 - [Chapter 4.1 - Linear mode](docs/ch04.01.linear.md)
 - [Chapter 4.2 - Radial mode](docs/ch04.02.radial.md)
 - [Chapter 4.3 - Bezier mode](docs/ch04.03.bezier.md)
+- [Chapter 4.4 - Point and shoot mode](docs/ch04.04.point-and-shoot.md)
 - [Chapter 5 - Player](docs/ch05.player.md)
 - [Chapter 6 - For developers](docs/ch06.developers.md)
 - [Appendix A - List of CVARs](docs/ap01.cvars.md)
