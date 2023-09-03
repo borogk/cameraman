@@ -2,15 +2,15 @@
 
 #include "zcommon.acs"
 
-#libdefine PATH_MODE_LINEAR	0
-#libdefine PATH_MODE_RADIAL	1
-#libdefine PATH_MODE_BEZIER	2
+#libdefine PATH_MODE_LINEAR     0
+#libdefine PATH_MODE_RADIAL     1
+#libdefine PATH_MODE_BEZIER     2
 
-#libdefine SPEED_MODE_DISTANCE	0
-#libdefine SPEED_MODE_TIME		1
+#libdefine SPEED_MODE_DISTANCE  0
+#libdefine SPEED_MODE_TIME      1
 
-#libdefine ANGLE_MODE_RELATIVE	0
-#libdefine ANGLE_MODE_ABSOLUTE	1
+#libdefine ANGLE_MODE_RELATIVE  0
+#libdefine ANGLE_MODE_ABSOLUTE  1
 
 function void WarpNoCheck(int tid, int x, int y, int z, int a, int dp)
 {
@@ -37,6 +37,22 @@ function int Min(int a, int b)
 function int Abs(int v)
 {
     return v < 0 ? -v : v;
+}
+
+function int FixAngleCrossingEast(int angle, int relativeToAngle)
+{
+    if (angle - relativeToAngle < -0.5)
+    {
+        // Crossed 1.0 moving counter-clockwise
+        return angle + 1.0;
+    }
+    else if (angle - relativeToAngle > 0.5)
+    {
+        // Crossed 0.0 moving clockwise
+        return angle - 1.0;
+    }
+
+    return angle;
 }
 
 // Common CVARS
