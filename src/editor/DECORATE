@@ -4,12 +4,17 @@ actor CmanCursor
 {
     +NOGRAVITY
     +NOCLIP
-    Scale 0.16
+    +FORCEXYBILLBOARD
+    RenderStyle "AddStencil"
+    StencilColor "00 FF 00"
+    XScale 0.166666
+    YScale 0.138888
+    Alpha 0.5
 
     States
     {
         Spawn:
-            BFS1 A 1 Bright
+            MARK A 1 Bright
             Loop
     }
 }
@@ -18,8 +23,11 @@ actor CmanPathMarker
 {
     +NOGRAVITY
     +NOCLIP
-    RenderStyle "Translucent"
-    Scale 0.1
+    +FORCEXYBILLBOARD
+    RenderStyle "AddStencil"
+    StencilColor "00 FF 00"
+    XScale 0.100000
+    YScale 0.083333
     Alpha 0.3
 
     var int user_animation_delay;
@@ -27,36 +35,36 @@ actor CmanPathMarker
     States
     {
         Spawn:
-            BFS1 A 1 Bright
+            MARK A 1 Bright
             Loop
         Animated:
-            BFS1 A 1 Bright
+            MARK A 1 Bright
             {
-                A_SetTranslucent(0.1);
+                A_SetRenderStyle(0.1, STYLE_AddStencil);
                 A_SetTics(user_animation_delay);
             }
             Goto AnimatedLoop
         AnimatedLoop:
-            BFS1 A 1 Bright A_SetTranslucent(0.1)
-            BFS1 A 1 Bright A_SetTranslucent(0.2)
-            BFS1 A 1 Bright A_SetTranslucent(0.3)
-            BFS1 A 1 Bright A_SetTranslucent(0.4)
-            BFS1 A 1 Bright A_SetTranslucent(0.5)
-            BFS1 A 1 Bright A_SetTranslucent(0.6)
-            BFS1 A 1 Bright A_SetTranslucent(0.8)
-            BFS1 A 1 Bright A_SetTranslucent(1.0)
-            BFS1 A 1 Bright A_SetTranslucent(0.8)
-            BFS1 A 1 Bright A_SetTranslucent(0.6)
-            BFS1 A 1 Bright A_SetTranslucent(0.4)
-            BFS1 A 1 Bright A_SetTranslucent(0.2)
-            BFS1 A 10 Bright A_SetTranslucent(0.1)
+            MARK A 1 Bright A_SetRenderStyle(0.1, STYLE_AddStencil)
+            MARK A 1 Bright A_SetRenderStyle(0.2, STYLE_AddStencil)
+            MARK A 1 Bright A_SetRenderStyle(0.3, STYLE_AddStencil)
+            MARK A 1 Bright A_SetRenderStyle(0.4, STYLE_AddStencil)
+            MARK A 1 Bright A_SetRenderStyle(0.5, STYLE_AddStencil)
+            MARK A 1 Bright A_SetRenderStyle(0.6, STYLE_AddStencil)
+            MARK A 1 Bright A_SetRenderStyle(0.8, STYLE_AddStencil)
+            MARK A 1 Bright A_SetRenderStyle(1.0, STYLE_AddStencil)
+            MARK A 1 Bright A_SetRenderStyle(0.8, STYLE_AddStencil)
+            MARK A 1 Bright A_SetRenderStyle(0.6, STYLE_AddStencil)
+            MARK A 1 Bright A_SetRenderStyle(0.4, STYLE_AddStencil)
+            MARK A 1 Bright A_SetRenderStyle(0.2, STYLE_AddStencil)
+            MARK A 10 Bright A_SetRenderStyle(0.1, STYLE_AddStencil)
             Loop
     }
 }
 
 actor CmanTempPathMarker : CmanPathMarker
 {
-    Translation 0
+    StencilColor "AA AA AA"
 }
 
 // Common with player

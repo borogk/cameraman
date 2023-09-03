@@ -1,0 +1,5 @@
+Sprite MARKA0, 45, 45
+{
+    Patch BFS1A0, 0, 0
+    Offset 22, 22
+}

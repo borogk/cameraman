@@ -5,20 +5,32 @@
 #import "geometry.acs"
 #import "common.acs"
 
+#define DRAW_MODE_LINEAR            0
+#define DRAW_MODE_RADIAL            1
+#define DRAW_MODE_BEZIER            2
+#define DRAW_MODE_POINT_AND_SHOOT   3
+
+#define ONE_TIC_MESSAGE_DURATION    1873
+
+#define DEFAULT_MESSAGE_FREEZE      50
+
 int cursorTid = -1;
 int pathMarkerTid = -1;
 int tempPathMarkerTid = -1;
 
-int drawMode = PATH_MODE_LINEAR;
+int drawMode = DRAW_MODE_LINEAR;
 int curIndex = 0;
 int curX[8];
 int curY[8];
 int curZ[8];
+int curA[8];
+int curP[8];
 bool curLocked = false;
 
-int exportCount = 0;
+str statusMessageFreeze = "";
+int statusMessageFreezeTics = 0;
 
-#define ONE_TIC_MESSAGE_DURATION    1873
+int exportCount = 0;
 
 // Editor CVARS
 
@@ -164,7 +176,7 @@ function void MoveLockedCursor(int diff)
 {
     int dx = GetActorX(0) - curX[curIndex];
     int dy = GetActorY(0) - curY[curIndex];
-    int dz = GetActorZ(0) + 32.0 - curZ[curIndex];
+    int dz = GetActorZ(0) + GetActorViewHeight(0) - curZ[curIndex];
 
     int dist = VectorLength(VectorLength(dx, dy), dz);
     if (diff > 0.0 || dist > diff)
@@ -199,25 +211,46 @@ script "Cman_CursorLoop" ENTER
         int d = GetCursorDistance();
         int a = GetActorAngle(0);
         int p = GetActorPitch(0);
-        int x = GetActorX(0) + FixedMul(Cos(a), d);
-        int y = GetActorY(0) + FixedMul(Sin(a), d);
-        int z = GetActorZ(0) + 32.0 - FixedMul(Sin(p), d);
+        int x = GetActorX(0);
+        int y = GetActorY(0);
+        int z = GetActorZ(0) + GetActorViewHeight(0);
 
-        if (!curLocked)
+        if (drawMode != DRAW_MODE_POINT_AND_SHOOT)
+        {
+            if (!curLocked)
+            {
+                curX[curIndex] = x + FixedMul(Cos(a), d);
+                curY[curIndex] = y + FixedMul(Sin(a), d);
+                curZ[curIndex] = z - FixedMul(Sin(p), d);
+
+                SetActorFlag(GetCursorTid(), "INVISIBLE", false);
+                SetActorProperty(GetCursorTid(), APROP_StencilColor, 0x00FF00);
+            }
+            else
+            {
+                SetActorFlag(GetCursorTid(), "INVISIBLE", false);
+                SetActorProperty(GetCursorTid(), APROP_StencilColor, 0xFFFF00);
+            }
+
+            WarpNoCheck(GetCursorTid(), curX[curIndex], curY[curIndex], curZ[curIndex], 0, 0);
+        }
+        else
         {
             curX[curIndex] = x;
             curY[curIndex] = y;
-            curZ[curIndex] = z;
+            curZ[curIndex] = z - 8.0;
+            curA[curIndex] = a;
+            curP[curIndex] = p;
+
+            SetActorFlag(GetCursorTid(), "INVISIBLE", true);
         }
 
-        WarpNoCheck(GetCursorTid(), curX[curIndex], curY[curIndex], curZ[curIndex], 0, 0);
-
-        if ((drawMode == PATH_MODE_LINEAR || drawMode == PATH_MODE_BEZIER) && curIndex == 1)
+        if ((drawMode == DRAW_MODE_LINEAR || drawMode == DRAW_MODE_BEZIER) && curIndex == 1)
         {
             InitLinearValues(curX[0], curY[0], curZ[0], curX[1], curY[1], curZ[1], 0, 0, 0, 0);
             RespawnPathAfterGeometryInit(false, PATH_MODE_LINEAR);
         }
-        else if (drawMode == PATH_MODE_RADIAL && curIndex > 0)
+        else if (drawMode == DRAW_MODE_RADIAL && curIndex > 0)
         {
             int r0 = VectorLength(curX[1] - curX[0], curY[1] - curY[0]);
             int r1 = curIndex >= 2 ? VectorLength(curX[2] - curX[0], curY[2] - curY[0]) : r0;
@@ -225,7 +258,7 @@ script "Cman_CursorLoop" ENTER
             InitRadialValues(0.0, 1.0, r0, r1, curX[0], curY[0], curX[0], curY[0], curZ[0], curZ[1], 0, 0, 0, 0);
             RespawnPathAfterGeometryInit(false, PATH_MODE_RADIAL);
         }
-        else if (drawMode == PATH_MODE_BEZIER && curIndex == 2)
+        else if (drawMode == DRAW_MODE_BEZIER && curIndex == 2)
         {
             InitBezierValues(curX[0], curY[0], curZ[0], curX[2], curY[2], curZ[2], curX[1], curY[1], curZ[1], 0, 0, 0, 0);
             RespawnPathAfterGeometryInit(false, PATH_MODE_BEZIER);
@@ -233,51 +266,140 @@ script "Cman_CursorLoop" ENTER
 
         if (!playing)
         {
-            HudMessage(s:"Cursor"; HUDMSG_PLAIN, 0, CR_GREY, -0.01, 0.51, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:"X = ", d:(curX[curIndex] >> 16); HUDMSG_PLAIN, 0, CR_GREEN, -0.01, 0.55, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:"Y = ", d:(curY[curIndex] >> 16); HUDMSG_PLAIN, 0, CR_GREEN, -0.01, 0.58, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:"Z = ", d:(curZ[curIndex] >> 16); HUDMSG_PLAIN, 0, CR_GREEN, -0.01, 0.61, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:"Distance = ", d:(d >> 16); HUDMSG_PLAIN, 0, curLocked ? CR_DARKGREY : CR_GREEN, -0.01, 0.64, ONE_TIC_MESSAGE_DURATION);
+            int hudY = 0.46;
 
-            HudMessage(s:"Angle"; HUDMSG_PLAIN, 0, CR_GREY, -0.01, 0.71, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:RoundAngleStr(a, 3); HUDMSG_PLAIN, 0, CR_YELLOW, -0.01, 0.75, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:RoundAngleStr(a - 1.0, 3); HUDMSG_PLAIN, 0, CR_YELLOW, -0.12, 0.75, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:"Cursor"; HUDMSG_PLAIN, 0, CR_GREY, -0.01, hudY, ONE_TIC_MESSAGE_DURATION); hudY += 0.04;
+            HudMessage(s:"X = ", d:(curX[curIndex] >> 16); HUDMSG_PLAIN, 0, CR_GREEN, -0.01, hudY, ONE_TIC_MESSAGE_DURATION); hudY += 0.03;
+            HudMessage(s:"Y = ", d:(curY[curIndex] >> 16); HUDMSG_PLAIN, 0, CR_GREEN, -0.01, hudY, ONE_TIC_MESSAGE_DURATION); hudY += 0.03;
+            HudMessage(s:"Z = ", d:(curZ[curIndex] >> 16); HUDMSG_PLAIN, 0, CR_GREEN, -0.01, hudY, ONE_TIC_MESSAGE_DURATION); hudY += 0.03;
+            if (drawMode != DRAW_MODE_POINT_AND_SHOOT && !curLocked)
+            {
+                HudMessage(s:"Distance = ", d:(d >> 16); HUDMSG_PLAIN, 0, CR_GREEN, -0.01, hudY, ONE_TIC_MESSAGE_DURATION);
+            }
+            else
+            {
+                HudMessage(s:"Distance = N/A"; HUDMSG_PLAIN, 0, CR_GREY, -0.01, hudY, ONE_TIC_MESSAGE_DURATION);
+            }
 
-            HudMessage(s:"Pitch"; HUDMSG_PLAIN, 0, CR_GREY, -0.01, 0.82, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:RoundAngleStr(p, 3); HUDMSG_PLAIN, 0, CR_YELLOW, -0.01, 0.86, ONE_TIC_MESSAGE_DURATION);
+            hudY += 0.07;
+
+            HudMessage(s:"Angle"; HUDMSG_PLAIN, 0, CR_GREY, -0.01, hudY, ONE_TIC_MESSAGE_DURATION); hudY += 0.04;
+            HudMessage(s:RoundAngleStr(a, 3); HUDMSG_PLAIN, 0, CR_YELLOW, -0.01, hudY, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:RoundAngleStr(a - 1.0, 3); HUDMSG_PLAIN, 0, CR_YELLOW, -0.12, hudY, ONE_TIC_MESSAGE_DURATION);
+
+            hudY += 0.07;
+
+            HudMessage(s:"Pitch"; HUDMSG_PLAIN, 0, CR_GREY, -0.01, hudY, ONE_TIC_MESSAGE_DURATION); hudY += 0.04;
+            HudMessage(s:RoundAngleStr(p, 3); HUDMSG_PLAIN, 0, CR_YELLOW, -0.01, hudY, ONE_TIC_MESSAGE_DURATION);
 
             str drawModeStr = "";
-            if (drawMode == PATH_MODE_LINEAR)
+            if (drawMode == DRAW_MODE_LINEAR)
             {
                 drawModeStr = "LINEAR";
             }
-            else if (drawMode == PATH_MODE_RADIAL)
+            else if (drawMode == DRAW_MODE_RADIAL)
             {
                 drawModeStr = "RADIAL";
             }
-            else if (drawMode == PATH_MODE_BEZIER)
+            else if (drawMode == DRAW_MODE_BEZIER)
             {
                 drawModeStr = "BEZIER";
             }
+            else if (drawMode == DRAW_MODE_POINT_AND_SHOOT)
+            {
+                drawModeStr = "POINT AND SHOOT";
+            }
 
-            HudMessage(s:"Draw mode:"; HUDMSG_PLAIN, 0, CR_GREY, -0.01, 0.94, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:drawModeStr; HUDMSG_PLAIN, 0, CR_GREEN, -0.22, 0.94, ONE_TIC_MESSAGE_DURATION);
+            hudY += 0.07;
+
+            HudMessage(s:"Draw mode:"; HUDMSG_PLAIN, 0, CR_GREY, -0.01, hudY, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:drawModeStr; HUDMSG_PLAIN, 0, CR_GREEN, -0.22, hudY, ONE_TIC_MESSAGE_DURATION);
 
             str curLockedStr;
             int curLockedColor;
-            if (curLocked)
+            if (drawMode == DRAW_MODE_POINT_AND_SHOOT)
+            {
+                curLockedStr = "N/A";
+                curLockedColor = CR_GREY;
+            }
+            else if (curLocked)
             {
                 curLockedStr = "ON";
-                curLockedColor = CR_GREEN;
+                curLockedColor = CR_YELLOW;
             }
             else
             {
                 curLockedStr = "OFF";
-                curLockedColor = CR_RED;
+                curLockedColor = CR_GREEN;
             }
 
-            HudMessage(s:"Cursor lock:"; HUDMSG_PLAIN, 0, CR_GREY, -0.01, 0.99, ONE_TIC_MESSAGE_DURATION);
-            HudMessage(s:curLockedStr; HUDMSG_PLAIN, 0, curLockedColor, -0.22, 0.99, ONE_TIC_MESSAGE_DURATION);
+            hudY += 0.04;
+
+            HudMessage(s:"Cursor lock:"; HUDMSG_PLAIN, 0, CR_GREY, -0.01, hudY, ONE_TIC_MESSAGE_DURATION);
+            HudMessage(s:curLockedStr; HUDMSG_PLAIN, 0, curLockedColor, -0.22, hudY, ONE_TIC_MESSAGE_DURATION);
+
+            str statusStr;
+            if (statusMessageFreezeTics > 0)
+            {
+                statusStr = statusMessageFreeze;
+                statusMessageFreezeTics--;
+            }
+            else if (drawMode == DRAW_MODE_LINEAR)
+            {
+                if (curIndex == 0)
+                {
+                    statusStr = "Step 1: move cursor to the line start, 'use cursor' to continue";
+                }
+                else
+                {
+                    statusStr = "Step 2: move cursor to the line end, 'use cursor' to finish";
+                }
+            }
+            else if (drawMode == DRAW_MODE_RADIAL)
+            {
+                if (curIndex == 0)
+                {
+                    statusStr = "Step 1: move cursor to the center, 'use cursor' to continue";
+                }
+                else if (curIndex == 1)
+                {
+                    statusStr = "Step 2: move cursor to set the radius, 'use cursor' to continue";
+                }
+                else
+                {
+                    statusStr = "Step 3: move cursor to set the 2nd radius, 'use cursor' to finish";
+                }
+            }
+            else if (drawMode == DRAW_MODE_BEZIER)
+            {
+                if (curIndex == 0)
+                {
+                    statusStr = "Step 1: move cursor to the curve start, 'use cursor' to continue";
+                }
+                else if (curIndex == 1)
+                {
+                    statusStr = "Step 2: move cursor to the curve end, 'use cursor' to continue";
+                }
+                else
+                {
+                    statusStr = "Step 3: move cursor to bend the curve, 'use cursor' to finish";
+                }
+            }
+            else if (drawMode == DRAW_MODE_POINT_AND_SHOOT)
+            {
+                if (curIndex == 0)
+                {
+                    statusStr = "Step 1: move yourself to the line start, press 'use cursor'";
+                }
+                else
+                {
+                    statusStr = "Step 2: move yourself to the line end, press 'use cursor' to finish";
+                }
+            }
+
+            hudY += 0.08;
+
+            HudMessage(s:statusStr; HUDMSG_PLAIN, 0, CR_CYAN, -0.01, hudY, ONE_TIC_MESSAGE_DURATION);
         }
 
         Delay(1);
@@ -315,7 +437,7 @@ script "Cman_UseCursor" (void)
     curY[curIndex] = curY[curIndex - 1];
     curZ[curIndex] = curZ[curIndex - 1];
 
-    if (drawMode == PATH_MODE_LINEAR && curIndex >= 2)
+    if (drawMode == DRAW_MODE_LINEAR && curIndex >= 2)
     {
         SetPathMode(PATH_MODE_LINEAR);
         SetX0(curX[0]);
@@ -328,8 +450,10 @@ script "Cman_UseCursor" (void)
         curIndex = 0;
         InitFinalGeometryAndRespawnPath();
         Thing_Remove(GetTempPathMarkerTid());
+        statusMessageFreeze = "------ Made a line! ------";
+        statusMessageFreezeTics = DEFAULT_MESSAGE_FREEZE;
     }
-    else if (drawMode == PATH_MODE_RADIAL && curIndex >= 3)
+    else if (drawMode == DRAW_MODE_RADIAL && curIndex >= 3)
     {
         SetPathMode(PATH_MODE_RADIAL);
         SetCX0(curX[0]);
@@ -346,8 +470,10 @@ script "Cman_UseCursor" (void)
         curIndex = 0;
         InitFinalGeometryAndRespawnPath();
         Thing_Remove(GetTempPathMarkerTid());
+        statusMessageFreeze = "------ Made a radial curve! ------";
+        statusMessageFreezeTics = DEFAULT_MESSAGE_FREEZE;
     }
-    else if (drawMode == PATH_MODE_BEZIER && curIndex >= 3)
+    else if (drawMode == DRAW_MODE_BEZIER && curIndex >= 3)
     {
         SetPathMode(PATH_MODE_BEZIER);
         SetX0(curX[0]);
@@ -363,6 +489,30 @@ script "Cman_UseCursor" (void)
         curIndex = 0;
         InitFinalGeometryAndRespawnPath();
         Thing_Remove(GetTempPathMarkerTid());
+        statusMessageFreeze = "------ Made a Bezier curve! ------";
+        statusMessageFreezeTics = DEFAULT_MESSAGE_FREEZE;
+    }
+    else if (drawMode == DRAW_MODE_POINT_AND_SHOOT && curIndex >= 2)
+    {
+        SetPathMode(PATH_MODE_LINEAR);
+        SetX0(curX[0]);
+        SetY0(curY[0]);
+        SetZ0(curZ[0]);
+        SetX1(curX[1]);
+        SetY1(curY[1]);
+        SetZ1(curZ[1]);
+        SetA0(curA[0]);
+        SetA1(FixAngleCrossingEast(curA[1], curA[0]));
+        SetP0(curP[0]);
+        SetP1(curP[1]);
+        SetAngleMode(ANGLE_MODE_ABSOLUTE);
+        SetOvershoot(false);
+
+        curIndex = 0;
+        InitFinalGeometryAndRespawnPath();
+        Thing_Remove(GetTempPathMarkerTid());
+        statusMessageFreeze = "------ Made a line! ------";
+        statusMessageFreezeTics = DEFAULT_MESSAGE_FREEZE;
     }
 }
 
@@ -371,17 +521,21 @@ script "Cman_SwitchDrawingMode" (void)
     curIndex = 0;
     Thing_Remove(GetTempPathMarkerTid());
 
-    if (drawMode == PATH_MODE_LINEAR)
+    if (drawMode == DRAW_MODE_LINEAR)
     {
-        drawMode = PATH_MODE_RADIAL;
+        drawMode = DRAW_MODE_RADIAL;
     }
-    else if (drawMode == PATH_MODE_RADIAL)
+    else if (drawMode == DRAW_MODE_RADIAL)
     {
-        drawMode = PATH_MODE_BEZIER;
+        drawMode = DRAW_MODE_BEZIER;
     }
-    else if (drawMode == PATH_MODE_BEZIER)
+    else if (drawMode == DRAW_MODE_BEZIER)
     {
-        drawMode = PATH_MODE_LINEAR;
+        drawMode = DRAW_MODE_POINT_AND_SHOOT;
+    }
+    else if (drawMode == DRAW_MODE_POINT_AND_SHOOT)
+    {
+        drawMode = DRAW_MODE_LINEAR;
     }
 }
 

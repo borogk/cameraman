@@ -197,17 +197,7 @@ function int NextBezierValues(int t, int angleMode, int speed, bool overshoot)
 
         if (prevTangentAngle != UNDEFINED_ANGLE)
         {
-            // Adjust to the angle crossing the East direction
-            if (tangentAngle - prevTangentAngle < -0.5)
-            {
-                // Crossed 1.0 moving counter-clockwise
-                tangentAngle += 1.0;
-            }
-            else if (tangentAngle - prevTangentAngle > 0.5)
-            {
-                // Crossed 0.0 moving clockwise
-                tangentAngle -= 1.0;
-            }
+            tangentAngle = FixAngleCrossingEast(tangentAngle, prevTangentAngle);
         }
 
         prevTangentAngle = tangentAngle;
