@@ -1,8 +1,8 @@
 # Cameraman mod for ZDoom
 
-###[Download (version 1.2)](https://github.com/borogk/zdoom-cameraman/releases/download/v1.2/cameraman-1.2.zip)
+[--- Download the latest version (v1.2) ---](https://github.com/borogk/zdoom-cameraman/releases/download/v1.2/cameraman-1.2.zip)
 
-------
+---
 
 ### What is Cameraman? 
 
