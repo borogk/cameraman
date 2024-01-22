@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 WD=`dirname $0`
-. ${WD}/settings.sh
-. ${WD}/include.sh
+. ${WD}/cm-settings.sh
+. ${WD}/cm-include.sh
 PK3="${WD}/CameramanEditor.pk3"
 LOG="${WD}/editor.log"
 ARGS="+freelook 1 +noclip2 +notarget -file $PK3 +logfile $LOG "

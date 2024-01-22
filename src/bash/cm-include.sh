@@ -20,7 +20,7 @@ done
 }
 
 startnum() {
-i=$(ls ${WD}/*.cman|sort -n|tail -1|sed "s/${WD}.*-//;s/\..*//" 2>/dev/null)
+i=$(ls *.cman|sort -n|tail -1|sed "s/.*-//;s/\..*//" 2>/dev/null)
 [ -z $i ] && i=0000 || i=$(printf "%04d" $(( 10#${i}+1 )))
 printf "$i"
 }
