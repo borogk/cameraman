@@ -84,6 +84,6 @@ OptionMenu "CmanOptionsMenu"
     StaticText ""
     StaticText "-----------------------------------------", "darkgrey"
     StaticText "Cameraman Editor v1.2", "darkgrey"
-    StaticText "https://github.com/borogk/zdoom-cameraman", "darkgrey"
+    StaticText "https://github.com/borogk/cameraman", "darkgrey"
     StaticText "-----------------------------------------", "darkgrey"
 }
