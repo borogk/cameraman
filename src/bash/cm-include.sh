@@ -8,10 +8,10 @@ i=$(startnum);o=0
 cat $1 | while read c 
 do 
 if [[ $c =~ END\ CAM ]]
-    then o=0;i=$(printf "%04d" $(( 10#${i}+1 )))
+    then o=0;echo "Exported export-${i}.cman";i=$(printf "%04d" $(( 10#${i}+1 )))
 fi
 if [ $o -gt 0 ]
-    then printf -- "$c\n" >> ${WD}/export-${i}.cman 
+    then printf -- "$c\n" >> export-${i}.cman
 fi
 if [[ $c =~ BEGIN\ CAM ]]
     then o=1 
@@ -20,7 +20,7 @@ done
 }
 
 startnum() {
-i=$(ls ${WD}/*.cman|sort -n|tail -1|sed "s/${WD}.*-//;s/\..*//" 2>/dev/null)
+i=$(ls *.cman|sort -n|tail -1|sed "s/.*-//;s/\..*//" 2>/dev/null)
 [ -z $i ] && i=0000 || i=$(printf "%04d" $(( 10#${i}+1 )))
 printf "$i"
 }
