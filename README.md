@@ -1,8 +1,8 @@
-# Cameraman mod for ZDoom
+# Cameraman
 
-[--- Download the latest version (v1.2) ---](https://github.com/borogk/zdoom-cameraman/releases/download/v1.2/cameraman-1.2.zip)
+This is a mod for ZDoom, which helps to perform camerawork in-engine.
 
----
+Download the latest version: [cameraman-1.2.zip](https://github.com/borogk/cameraman/releases/download/v1.2/cameraman-1.2.zip)
 
 ### What is Cameraman? 
 
@@ -33,7 +33,7 @@ Possible use cases:
 ### Seeking help?
 
 - read the manual
-- create an issue right here on GitHub ([link to create](https://github.com/borogk/zdoom-cameraman/issues/new))
+- create an issue right here on GitHub ([link to create](https://github.com/borogk/cameraman/issues/new))
 - visit the mod's [ZDoom forums thread](https://forum.zdoom.org/viewtopic.php?t=73478)
 
 ### Author and contributors
