@@ -2,7 +2,7 @@
 
 This is a mod for ZDoom, which helps to perform camerawork in-engine.
 
-Download the latest version: [cameraman-1.2.zip](https://github.com/borogk/cameraman/releases/download/v1.2/cameraman-1.2.zip)
+Download the latest version: [cameraman-1.3.zip](https://github.com/borogk/cameraman/releases/download/v1.3/cameraman-1.3.zip)
 
 ### What is Cameraman? 
 
