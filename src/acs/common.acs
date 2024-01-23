@@ -157,7 +157,7 @@ function void SetAngleBufferLen(int value)
 
 function int GetDelay(void)
 {
-    return Max(GetCVar("cman_delay"), 1);
+    return Max(GetCVar("cman_delay"), 0);
 }
 
 function int GetX0(void)
