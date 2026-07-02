@@ -17,7 +17,7 @@ func main() {
 	args := []string{
 		"-file", editorModulePath,
 		"+freelook", "1",
-		"+noclip",
+		"+noclip2",
 		"+notarget",
 		"+logfile", logFile.Name(),
 	}
