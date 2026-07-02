@@ -39,7 +39,7 @@ build-macos: GOARCH=arm64
 build-macos: build-one
 
 # Builds for one platform (reused by specific platform recipes)
-build-one: editor-pk3 player-pk3 compile-go
+build-one: editor-pk3 player-pk3 cm-editor cm-player
 	cp ./LICENSE $(OUT_BUILD_DIR)
 	cp ./build/CameramanEditor.pk3 $(OUT_BUILD_DIR)
 	cp ./build/CameramanPlayer.pk3 $(OUT_BUILD_DIR)
@@ -56,10 +56,14 @@ define go-build
 		$(2)
 endef
 
-# Compiles cm-editor and cm-player
-compile-go:
+# Compiles cm-editor
+cm-editor:
 	mkdir -p $(OUT_BUILD_DIR)
 	$(call go-build,cm-editor,./cmd/cm-editor/main.go)
+
+# Compiles cm-player
+cm-player:
+	mkdir -p $(OUT_BUILD_DIR)
 	$(call go-build,cm-player,./cmd/cm-player/main.go)
 
 # Compiles ACS sources that go into PK3s
