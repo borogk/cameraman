@@ -45,11 +45,22 @@ build-one: editor-pk3 player-pk3 compile-go
 	cp ./build/CameramanPlayer.pk3 $(OUT_BUILD_DIR)
 	cd $(OUT_BUILD_DIR); zip ../$(OUT_ZIP) *
 
+# Cross-platform compile macro
+define go-build
+	GOOS=$(GOOS) \
+	GOARCH=$(GOARCH) \
+	$(GO_BIN) build \
+		-trimpath \
+		-ldflags="-s -w" \
+		-o $(OUT_BUILD_DIR)/$(1)$(OUT_BIN_EXT) \
+		$(2)
+endef
+
 # Compiles cm-editor and cm-player
 compile-go:
 	mkdir -p $(OUT_BUILD_DIR)
-	$(GO_BIN) build -trimpath -ldflags="-s -w" -o $(OUT_BUILD_DIR)/cm-editor$(OUT_BIN_EXT) ./cmd/cm-editor/main.go
-	$(GO_BIN) build -trimpath -ldflags="-s -w" -o $(OUT_BUILD_DIR)/cm-player$(OUT_BIN_EXT) ./cmd/cm-player/main.go
+	$(call go-build,cm-editor,./cmd/cm-editor/main.go)
+	$(call go-build,cm-player,./cmd/cm-player/main.go)
 
 # Compiles ACS sources that go into PK3s
 compile-acs:
