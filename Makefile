@@ -1,4 +1,4 @@
-VERSION := 1.4.0
+VERSION := v1.4.0
 
 GO_BIN ?= go
 ACC_BIN ?= acc
@@ -15,7 +15,7 @@ clean:
 	rm -rf ./build/
 
 # Windows x64 build
-build-windows: OUT_ZIP=windows-amd64-cameraman-$(VERSION).zip
+build-windows: OUT_ZIP=cameraman-$(VERSION)-windows-amd64.zip
 build-windows: OUT_BUILD_DIR=./build/windows
 build-windows: OUT_BIN_EXT=.exe
 build-windows: GOOS=windows
@@ -23,7 +23,7 @@ build-windows: GOARCH=amd64
 build-windows: build-one
 
 # Linux x64 build
-build-linux: OUT_ZIP=linux-amd64-cameraman-$(VERSION).zip
+build-linux: OUT_ZIP=cameraman-$(VERSION)-linux-amd64.zip
 build-linux: OUT_BUILD_DIR=./build/linux
 build-linux: OUT_BIN_EXT=
 build-linux: GOOS=linux
@@ -31,7 +31,7 @@ build-linux: GOARCH=amd64
 build-linux: build-one
 
 # macOS ARM build
-build-macos: OUT_ZIP=macos-arm64-cameraman-$(VERSION).zip
+build-macos: OUT_ZIP=cameraman-$(VERSION)-macos-arm64.zip
 build-macos: OUT_BUILD_DIR=./build/macos
 build-macos: OUT_BIN_EXT=
 build-macos: GOOS=darwin
