@@ -1,4 +1,4 @@
-package launch
+package launcher
 
 import (
 	"os"
@@ -7,12 +7,13 @@ import (
 	"runtime"
 )
 
-func CameramanModulePath(pk3 string) string {
+func CameramanModulePath(pk3 string) (string, error) {
 	exec, err := os.Executable()
 	if err != nil {
-		panic(err)
+		return "", err
 	}
-	return path.Join(filepath.Dir(exec), pk3)
+
+	return path.Join(filepath.Dir(exec), pk3), nil
 }
 
 func ZdoomBin() string {
@@ -29,10 +30,11 @@ func ZdoomBin() string {
 	}
 }
 
-func TempLogFile() *os.File {
+func TempLogFile() (*os.File, error) {
 	logFile, err := os.CreateTemp(os.TempDir(), "*.log")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return logFile
+
+	return logFile, nil
 }

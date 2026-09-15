@@ -1,4 +1,4 @@
-package launch
+package launcher
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func RunCameraman(args []string) error {
+func LaunchCameraman(args []string) error {
 	zdoomBin := ZdoomBin()
 	fmt.Printf("ZDoom binary: %s\n", zdoomBin)
 	fmt.Printf("ZDoom args: %s\n", strings.Join(args, " "))
