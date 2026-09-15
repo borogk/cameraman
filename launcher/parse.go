@@ -48,7 +48,7 @@ func init() {
 	}
 }
 
-func ParseExtraArgs() ([]string, error) {
+func ParseLaunchArgs(loadScriptName string) ([]string, error) {
 	if len(os.Args) >= 2 && os.Args[1] == "load" {
 		if len(os.Args) < 3 {
 			return nil, fmt.Errorf("missing filename after 'load' command")
@@ -61,6 +61,7 @@ func ParseExtraArgs() ([]string, error) {
 		}
 
 		userArgs := os.Args[3:]
+		cmanArgs = append(cmanArgs, "+pukename", loadScriptName)
 		return append(userArgs, cmanArgs...), nil
 	}
 

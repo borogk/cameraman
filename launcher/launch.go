@@ -3,15 +3,19 @@ package launcher
 import (
 	"fmt"
 	"os/exec"
-	"strings"
 )
 
 func LaunchCameraman(args []string) error {
 	zdoomBin := ZdoomBin()
-	fmt.Printf("ZDoom binary: %s\n", zdoomBin)
-	fmt.Printf("ZDoom args: %s\n", strings.Join(args, " "))
-	fmt.Println("Cameraman is launching...")
+	fmt.Printf("ZDoom binary: \n")
+	fmt.Printf("  %s\n", zdoomBin)
+	fmt.Printf("ZDoom args: \n")
+	for _, arg := range args {
+		fmt.Printf("  %s\n", arg)
+	}
+	fmt.Printf("\n")
 
+	fmt.Println("Cameraman is launching...")
 	err := exec.Command(zdoomBin, args...).Run()
 	if err != nil {
 		return err

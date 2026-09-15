@@ -32,7 +32,7 @@ func main() {
 		"+logfile", logFile.Name(),
 	}
 
-	extraArgs, err := launcher.ParseExtraArgs()
+	extraArgs, err := launcher.ParseLaunchArgs("Cman_WarpToPath")
 	if err != nil {
 		fmt.Printf("error parsing extra args: %v\n", err)
 		os.Exit(1)
