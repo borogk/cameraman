@@ -12,7 +12,7 @@ import (
 
 var exportFileNameRegexp = regexp.MustCompile("^export-([0-9]+)\\.cman$")
 
-func SaveExportedProfiles(r io.Reader) error {
+func ScanAndSaveExportedProfiles(r io.Reader) error {
 	var currentOutput *os.File
 	defer func() {
 		if currentOutput != nil {

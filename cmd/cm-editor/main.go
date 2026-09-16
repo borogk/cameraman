@@ -29,7 +29,7 @@ func main() {
 		"+freelook", "1",
 		"+noclip2",
 		"+notarget",
-		"+logfile", logFile.Name(),
+		"-stdout",
 	}
 
 	extraArgs, err := launcher.ParseLaunchArgs("Cman_WarpToPath")
@@ -39,15 +39,9 @@ func main() {
 	}
 
 	args = append(args, extraArgs...)
-	err = launcher.LaunchCameraman(args)
+	err = launcher.LaunchCameraman(args, true)
 	if err != nil {
-		fmt.Printf("error running Cameraman: %s\n", err)
-		os.Exit(1)
-	}
-
-	err = launcher.SaveExportedProfiles(logFile)
-	if err != nil {
-		fmt.Printf("error saving exported profiles: %s\n", err)
+		fmt.Printf("error running Cameraman: %v\n", err)
 		os.Exit(1)
 	}
 }

@@ -23,7 +23,7 @@ func main() {
 	}
 
 	args = append(args, extraArgs...)
-	err = launcher.LaunchCameraman(args)
+	err = launcher.LaunchCameraman(args, false)
 	if err != nil {
 		fmt.Printf("error running Cameraman: %s\n", err)
 		os.Exit(1)
