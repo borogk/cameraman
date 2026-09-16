@@ -46,25 +46,25 @@ Cameraman is compatible with all major branches of ZDoom:
 1. [UZDoom](https://github.com/UZDoom/UZDoom)
 2. [GZDoom](https://doomwiki.org/wiki/GZDoom)
 3. [LZDoom](https://doomwiki.org/wiki/LZDoom)
-4. [ZDoom](https://doomwiki.org/wiki/ZDoom) (though discontinued, the last released version was confirmed to work)
 
 > [!NOTE]
-> Wide compatibility was possible thanks to relying on classic tech like ACS and DECORATE. Thus, any lesser known ZDoom forks are likely to be compatible as well.
+> Wide compatibility was possible thanks to relying on classic tech like ACS and DECORATE.
+> Thus, any lesser known ZDoom forks are likely to be compatible as well.
 
 ## DSDA-Doom engine compatibility (via cm-doom)
 
 [cm-doom](https://github.com/borogk/cm-doom) is a special fork of [dsda-doom](https://github.com/kraflab/dsda-doom) with Cameraman support in mind.
 
-It doesn't have editor component like **Cameraman**, instead it should be used alongside it:
+It doesn't have an editor component like **Cameraman**, instead it should be used alongside it:
 
 1. Setup camera in Cameraman's editor.
-2. Export camera profile to a separate file.
-3. Load exported file into **cm-doom** for playback.
+2. Export a camera profile to a separate file.
+3. Load the exported file into **cm-doom** for playback.
 
-This setup is more complicated, but offers following benefits thanks to inheriting DSDA features:
+This setup is more complicated but offers the following benefits (thanks to inheriting DSDA features):
 
 1. Strict demo compatibility.
-2. Viddump allows to directly export video clips with consistent framerate, without relying on screen-capture software.
+2. Viddump allows you to directly export video clips with consistent framerate, without relying on screen-capture software.
 3. More faithful visuals thanks to DSDA rendering implementation.
 
 > [!NOTE]
