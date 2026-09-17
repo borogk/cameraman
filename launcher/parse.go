@@ -48,6 +48,7 @@ func init() {
 	}
 }
 
+// ParseLaunchArgs detects 'load <file>' command and expands it into args that set up camera CVARs + startup ACS script.
 func ParseLaunchArgs(loadScriptName string) ([]string, error) {
 	if len(os.Args) >= 2 && os.Args[1] == "load" {
 		if len(os.Args) < 3 {
@@ -55,7 +56,7 @@ func ParseLaunchArgs(loadScriptName string) ([]string, error) {
 		}
 
 		cmanProfilePath := os.Args[2]
-		cmanArgs, err := ParseCameraProfile(cmanProfilePath)
+		cmanArgs, err := parseCameraProfile(cmanProfilePath)
 		if err != nil {
 			return nil, err
 		}
@@ -69,7 +70,8 @@ func ParseLaunchArgs(loadScriptName string) ([]string, error) {
 	return userArgs, nil
 }
 
-func ParseCameraProfile(filePath string) ([]string, error) {
+// parseCameraProfile reads a camera profile and converts it into a list of CVARs.
+func parseCameraProfile(filePath string) ([]string, error) {
 	fmt.Println("loading CVARs...")
 
 	file, err := os.Open(filePath)

@@ -5,6 +5,7 @@ import (
 	"os/exec"
 )
 
+// LaunchCameraman starts ZDoom executable and optionally scans stdout for camera profile exports.
 func LaunchCameraman(args []string, scanForExports bool) error {
 	zdoomBin := ZdoomBin()
 	fmt.Printf("ZDoom binary: \n")

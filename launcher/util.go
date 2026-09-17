@@ -7,6 +7,7 @@ import (
 	"runtime"
 )
 
+// CameramanModulePath returns the absolute path of a .pk3 module that is located next to Cameraman executable.
 func CameramanModulePath(pk3 string) (string, error) {
 	exec, err := os.Executable()
 	if err != nil {
@@ -16,6 +17,7 @@ func CameramanModulePath(pk3 string) (string, error) {
 	return path.Join(filepath.Dir(exec), pk3), nil
 }
 
+// ZdoomBin returns the path to configured ZDoom executable.
 func ZdoomBin() string {
 	env := os.Getenv("ZDOOM_BIN")
 	if env != "" {
@@ -28,13 +30,4 @@ func ZdoomBin() string {
 	default:
 		return "uzdoom"
 	}
-}
-
-func TempLogFile() (*os.File, error) {
-	logFile, err := os.CreateTemp(os.TempDir(), "*.log")
-	if err != nil {
-		return nil, err
-	}
-
-	return logFile, nil
 }

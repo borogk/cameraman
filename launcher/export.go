@@ -12,6 +12,7 @@ import (
 
 var exportFileNameRegexp = regexp.MustCompile("^export-([0-9]+)\\.cman$")
 
+// ScanAndSaveExportedProfiles reads ZDoom's output and looks for camera profile exports.
 func ScanAndSaveExportedProfiles(r io.Reader) error {
 	var currentOutput *os.File
 	defer func() {
@@ -32,7 +33,7 @@ func ScanAndSaveExportedProfiles(r io.Reader) error {
 			currentOutput = output
 		case "--- END CAMERAMAN ---":
 			if currentOutput != nil {
-				fmt.Printf("saving %s\n", currentOutput.Name())
+				fmt.Printf("saved %s\n", currentOutput.Name())
 				_ = currentOutput.Close()
 				currentOutput = nil
 			}
@@ -49,6 +50,7 @@ func ScanAndSaveExportedProfiles(r io.Reader) error {
 	return scanner.Err()
 }
 
+// generateExportFileName allocates a new available export file name (export-0001.cman, export-0002.cman etc.).
 func generateExportFileName() string {
 	cmanFiles, _ := filepath.Glob("*.cman")
 

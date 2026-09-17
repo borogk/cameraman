@@ -8,16 +8,6 @@ import (
 )
 
 func main() {
-	logFile, err := launcher.TempLogFile()
-	if err != nil {
-		fmt.Printf("error allocating temp log file: %v\n", err)
-		os.Exit(1)
-	}
-
-	defer func() {
-		_ = logFile.Close()
-	}()
-
 	editorModulePath, err := launcher.CameramanModulePath("CameramanEditor.pk3")
 	if err != nil {
 		fmt.Printf("error finding PK3: %v\n", err)
