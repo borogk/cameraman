@@ -5,14 +5,20 @@ ACC_BIN ?= acc
 ACC_INCLUDE ?= /usr/local/share/acc/
 
 # Primary recipe - performs clean build for multiple platforms
-build: clean
+build: clean test
 	$(MAKE) build-windows
 	$(MAKE) build-linux
 	$(MAKE) build-macos
+	@echo
+	@echo "Successfully built Cameraman ${VERSION}"
 
 # Cleans build directory
 clean:
 	rm -rf ./build/
+
+# Runs tests
+test:
+	$(GO_BIN) test ./launcher/
 
 # Windows x64 build
 build-windows: OUT_ZIP=cameraman-$(VERSION)-windows-amd64.zip
