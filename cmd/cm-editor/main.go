@@ -19,6 +19,7 @@ func main() {
 		"+freelook", "1",
 		"+noclip2",
 		"+notarget",
+		"+god",
 		"-stdout",
 	}
 
