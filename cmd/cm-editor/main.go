@@ -22,7 +22,7 @@ func main() {
 		"-stdout",
 	}
 
-	extraArgs, err := launcher.ParseLaunchArgs("Cman_WarpToPath")
+	extraArgs, err := launcher.ParseLaunchArgs(os.Args, "Cman_WarpToPath")
 	if err != nil {
 		fmt.Printf("error parsing extra args: %v\n", err)
 		os.Exit(1)

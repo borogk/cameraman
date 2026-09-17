@@ -16,7 +16,7 @@ func main() {
 
 	args := []string{"-file", playerModulePath}
 
-	extraArgs, err := launcher.ParseLaunchArgs("Cman_PlayInPlayer")
+	extraArgs, err := launcher.ParseLaunchArgs(os.Args, "Cman_PlayInPlayer")
 	if err != nil {
 		fmt.Printf("error parsing extra args: %v\n", err)
 		os.Exit(1)

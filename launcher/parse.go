@@ -49,24 +49,24 @@ func init() {
 }
 
 // ParseLaunchArgs detects 'load <file>' command and expands it into args that set up camera CVARs + startup ACS script.
-func ParseLaunchArgs(loadScriptName string) ([]string, error) {
-	if len(os.Args) >= 2 && os.Args[1] == "load" {
-		if len(os.Args) < 3 {
+func ParseLaunchArgs(args []string, loadScriptName string) ([]string, error) {
+	if len(args) >= 2 && args[1] == "load" {
+		if len(args) < 3 {
 			return nil, fmt.Errorf("missing filename after 'load' command")
 		}
 
-		cmanProfilePath := os.Args[2]
+		cmanProfilePath := args[2]
 		cmanArgs, err := parseCameraProfile(cmanProfilePath)
 		if err != nil {
 			return nil, err
 		}
 
-		userArgs := os.Args[3:]
+		userArgs := args[3:]
 		cmanArgs = append(cmanArgs, "+pukename", loadScriptName)
 		return append(userArgs, cmanArgs...), nil
 	}
 
-	userArgs := os.Args[1:]
+	userArgs := args[1:]
 	return userArgs, nil
 }
 
