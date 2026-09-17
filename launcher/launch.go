@@ -8,8 +8,10 @@ import (
 // LaunchCameraman starts ZDoom executable and optionally scans stdout for camera profile exports.
 func LaunchCameraman(args []string, scanForExports bool) error {
 	zdoomBin := ZdoomBin()
+	fmt.Println("-------------------------")
 	fmt.Printf("ZDoom binary: \n")
 	fmt.Printf("  %s\n", zdoomBin)
+	fmt.Println("-------------------------")
 	fmt.Printf("ZDoom args: \n")
 	for _, arg := range args {
 		fmt.Printf("  %s\n", arg)
