@@ -8,35 +8,29 @@ import (
 
 func TestParseLaunchArgs_NoArgs(t *testing.T) {
 	args, err := ParseLaunchArgs([]string{"cm-editor"}, "Test_Script")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assertNoError(t, err)
 
-	assertArray(t, []string{}, args)
+	assertArrayEquals(t, []string{}, args)
 }
 
 func TestParseLaunchArgs_OnlyUserArgs(t *testing.T) {
 	args, err := ParseLaunchArgs([]string{"cm-editor", "-iwad", "doom2", "-file", "sunlust.wad"}, "Test_Script")
-	if err != nil {
-		t.Fatal(err)
-	}
+	assertNoError(t, err)
 
-	assertArray(t, []string{"-iwad", "doom2", "-file", "sunlust.wad"}, args)
+	assertArrayEquals(t, []string{"-iwad", "doom2", "-file", "sunlust.wad"}, args)
 }
 
 func TestParseLaunchArgs_OnlyLoadArgs(t *testing.T) {
-	cman := testCmanFile(
+	cmanFile := testCmanFile(
 		"x0 = 0.0",
 		"x1 = 0.1",
 		"x2 = 0.2",
 	)
 
-	args, err := ParseLaunchArgs([]string{"cm-editor", "load", cman}, "Test_Script")
-	if err != nil {
-		t.Fatal(err)
-	}
+	args, err := ParseLaunchArgs([]string{"cm-editor", "load", cmanFile}, "Test_Script")
+	assertNoError(t, err)
 
-	assertArray(t, []string{
+	assertArrayEquals(t, []string{
 		"+cman_x0", "0.0",
 		"+cman_x1", "0.1",
 		"+cman_x2", "0.2",
@@ -45,18 +39,16 @@ func TestParseLaunchArgs_OnlyLoadArgs(t *testing.T) {
 }
 
 func TestParseLaunchArgs_BothUserAndLoadArgs(t *testing.T) {
-	cman := testCmanFile(
+	cmanFile := testCmanFile(
 		"x0 = 0.0",
 		"x1 = 0.1",
 		"x2 = 0.2",
 	)
 
-	args, err := ParseLaunchArgs([]string{"cm-editor", "load", cman, "-iwad", "doom2", "-file", "sunlust.wad"}, "Test_Script")
-	if err != nil {
-		t.Fatal(err)
-	}
+	args, err := ParseLaunchArgs([]string{"cm-editor", "load", cmanFile, "-iwad", "doom2", "-file", "sunlust.wad"}, "Test_Script")
+	assertNoError(t, err)
 
-	assertArray(t, []string{
+	assertArrayEquals(t, []string{
 		"-iwad", "doom2", "-file", "sunlust.wad",
 		"+cman_x0", "0.0",
 		"+cman_x1", "0.1",
@@ -66,32 +58,25 @@ func TestParseLaunchArgs_BothUserAndLoadArgs(t *testing.T) {
 }
 
 func TestParseLaunchArgs_MisplacedLoadCommand(t *testing.T) {
-	cman := testCmanFile(
+	cmanFile := testCmanFile(
 		"x0 = 0.0",
 		"x1 = 0.1",
 		"x2 = 0.2",
 	)
 
-	args, err := ParseLaunchArgs([]string{"cm-editor", "-iwad", "doom2", "load", cman, "-file", "sunlust.wad"}, "Test_Script")
-	if err != nil {
-		t.Fatal(err)
-	}
+	args, err := ParseLaunchArgs([]string{"cm-editor", "-iwad", "doom2", "load", cmanFile, "-file", "sunlust.wad"}, "Test_Script")
+	assertNoError(t, err)
 
-	assertArray(t, []string{"-iwad", "doom2", "load", cman, "-file", "sunlust.wad"}, args)
+	assertArrayEquals(t, []string{"-iwad", "doom2", "load", cmanFile, "-file", "sunlust.wad"}, args)
 }
 
 func TestParseLaunchArgs_MissingLoadPath(t *testing.T) {
 	_, err := ParseLaunchArgs([]string{"cm-editor", "load"}, "Test_Script")
-	if err == nil {
-		t.Fatal("expected error, got none")
-	}
-	if err.Error() != "missing filename after 'load' command" {
-		t.Fatalf("unexpected error: %s", err)
-	}
+	assertErrorMessage(t, "missing filename after 'load' command", err)
 }
 
 func TestParseLaunchArgs_EveryAllowedCvar(t *testing.T) {
-	cman := testCmanFile(
+	cmanFile := testCmanFile(
 		"path_mode = 0",
 		"speed_mode = 1",
 		"angle_mode = 2",
@@ -124,12 +109,10 @@ func TestParseLaunchArgs_EveryAllowedCvar(t *testing.T) {
 		"r1 = 8.1",
 	)
 
-	args, err := ParseLaunchArgs([]string{"cm-editor", "load", cman}, "Test_Script")
-	if err != nil {
-		t.Fatal(err)
-	}
+	args, err := ParseLaunchArgs([]string{"cm-editor", "load", cmanFile}, "Test_Script")
+	assertNoError(t, err)
 
-	assertArray(t, []string{
+	assertArrayEquals(t, []string{
 		"+cman_path_mode", "0",
 		"+cman_speed_mode", "1",
 		"+cman_angle_mode", "2",
@@ -165,7 +148,7 @@ func TestParseLaunchArgs_EveryAllowedCvar(t *testing.T) {
 }
 
 func TestParseLaunchArgs_SkipUnallowedCvars(t *testing.T) {
-	cman := testCmanFile(
+	cmanFile := testCmanFile(
 		"x0 = 0.0",
 		"x1 = 0.1",
 		"x2 = 0.2",
@@ -173,12 +156,10 @@ func TestParseLaunchArgs_SkipUnallowedCvars(t *testing.T) {
 		"xxx = 100",
 	)
 
-	args, err := ParseLaunchArgs([]string{"cm-editor", "load", cman}, "Test_Script")
-	if err != nil {
-		t.Fatal(err)
-	}
+	args, err := ParseLaunchArgs([]string{"cm-editor", "load", cmanFile}, "Test_Script")
+	assertNoError(t, err)
 
-	assertArray(t, []string{
+	assertArrayEquals(t, []string{
 		"+cman_x0", "0.0",
 		"+cman_x1", "0.1",
 		"+cman_x2", "0.2",
@@ -187,7 +168,7 @@ func TestParseLaunchArgs_SkipUnallowedCvars(t *testing.T) {
 }
 
 func TestParseLaunchArgs_SkipNonCvars(t *testing.T) {
-	cman := testCmanFile(
+	cmanFile := testCmanFile(
 		"# comment",
 		"x0 = 0.0",
 		"x1 = 0.1",
@@ -196,12 +177,10 @@ func TestParseLaunchArgs_SkipNonCvars(t *testing.T) {
 		"some extra line that doesn't conform",
 	)
 
-	args, err := ParseLaunchArgs([]string{"cm-editor", "load", cman}, "Test_Script")
-	if err != nil {
-		t.Fatal(err)
-	}
+	args, err := ParseLaunchArgs([]string{"cm-editor", "load", cmanFile}, "Test_Script")
+	assertNoError(t, err)
 
-	assertArray(t, []string{
+	assertArrayEquals(t, []string{
 		"+cman_x0", "0.0",
 		"+cman_x1", "0.1",
 		"+cman_x2", "0.2",
@@ -228,16 +207,4 @@ func testCmanFile(lines ...string) string {
 	}
 
 	return file.Name()
-}
-
-func assertArray(t *testing.T, expected []string, actual []string) {
-	t.Helper()
-	if len(actual) != len(expected) {
-		t.Fatalf("length mismatch: got %d, want %d", len(actual), len(expected))
-	}
-	for i := 0; i < len(actual); i++ {
-		if actual[i] != expected[i] {
-			t.Fatalf("mismatch at %d: got %s, want %s", i, actual[i], expected[i])
-		}
-	}
 }

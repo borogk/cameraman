@@ -33,7 +33,7 @@ func LaunchCameraman(args []string, scanForExports bool) error {
 			return err
 		}
 
-		err = ScanAndSaveExportedProfiles(stdoutPipe)
+		err = ScanAndSaveExportedProfiles(stdoutPipe, "")
 		if err != nil {
 			fmt.Printf("error while scanning for exported profiles: %v\n", err)
 		}
