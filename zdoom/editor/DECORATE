@@ -35,29 +35,29 @@ actor CmanPathMarker
     States
     {
         Spawn:
-            MARK A 1 Bright
+            MARK B 1 Bright
             Loop
         Animated:
-            MARK A 1 Bright
+            MARK B 1 Bright
             {
                 A_SetRenderStyle(0.1, STYLE_AddStencil);
                 A_SetTics(user_animation_delay);
             }
             Goto AnimatedLoop
         AnimatedLoop:
-            MARK A 1 Bright A_SetRenderStyle(0.1, STYLE_AddStencil)
-            MARK A 1 Bright A_SetRenderStyle(0.2, STYLE_AddStencil)
-            MARK A 1 Bright A_SetRenderStyle(0.3, STYLE_AddStencil)
-            MARK A 1 Bright A_SetRenderStyle(0.4, STYLE_AddStencil)
-            MARK A 1 Bright A_SetRenderStyle(0.5, STYLE_AddStencil)
-            MARK A 1 Bright A_SetRenderStyle(0.6, STYLE_AddStencil)
-            MARK A 1 Bright A_SetRenderStyle(0.8, STYLE_AddStencil)
-            MARK A 1 Bright A_SetRenderStyle(1.0, STYLE_AddStencil)
-            MARK A 1 Bright A_SetRenderStyle(0.8, STYLE_AddStencil)
-            MARK A 1 Bright A_SetRenderStyle(0.6, STYLE_AddStencil)
-            MARK A 1 Bright A_SetRenderStyle(0.4, STYLE_AddStencil)
-            MARK A 1 Bright A_SetRenderStyle(0.2, STYLE_AddStencil)
-            MARK A 10 Bright A_SetRenderStyle(0.1, STYLE_AddStencil)
+            MARK B 1 Bright A_SetRenderStyle(0.1, STYLE_AddStencil)
+            MARK B 1 Bright A_SetRenderStyle(0.2, STYLE_AddStencil)
+            MARK B 1 Bright A_SetRenderStyle(0.3, STYLE_AddStencil)
+            MARK B 1 Bright A_SetRenderStyle(0.4, STYLE_AddStencil)
+            MARK B 1 Bright A_SetRenderStyle(0.5, STYLE_AddStencil)
+            MARK B 1 Bright A_SetRenderStyle(0.6, STYLE_AddStencil)
+            MARK B 1 Bright A_SetRenderStyle(0.8, STYLE_AddStencil)
+            MARK B 1 Bright A_SetRenderStyle(1.0, STYLE_AddStencil)
+            MARK B 1 Bright A_SetRenderStyle(0.8, STYLE_AddStencil)
+            MARK B 1 Bright A_SetRenderStyle(0.6, STYLE_AddStencil)
+            MARK B 1 Bright A_SetRenderStyle(0.4, STYLE_AddStencil)
+            MARK B 1 Bright A_SetRenderStyle(0.2, STYLE_AddStencil)
+            MARK B 10 Bright A_SetRenderStyle(0.1, STYLE_AddStencil)
             Loop
     }
 }

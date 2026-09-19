@@ -1,5 +1,11 @@
 Sprite MARKA0, 45, 45
 {
-    Patch BFS1A0, 0, 0
+    Patch MARKA0, 0, 0
+    Offset 22, 22
+}
+
+Sprite MARKB0, 45, 45
+{
+    Patch MARKB0, 0, 0
     Offset 22, 22
 }

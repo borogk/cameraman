@@ -87,7 +87,7 @@ editor-pk3: compile-acs
 	cp ./build/acs/geometry.o ./build/editor/acs/
 	cp ./build/acs/editor.o ./build/editor/acs/
 	cp ./build/acs/player.o ./build/editor/acs/
-	cp ./zdoom/editor/* ./build/editor/
+	cp -r ./zdoom/editor/* ./build/editor/
 	cp ./LICENSE ./build/editor/
 	cd ./build/editor/; zip -r ../CameramanEditor.pk3 *
 
