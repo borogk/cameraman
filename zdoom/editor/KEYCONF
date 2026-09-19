@@ -1,0 +1,20 @@
+addkeysection "Cameraman" CameramanKeysection
+
+alias cman_menu "openmenu CmanOptionsMenu"
+alias cman_usecursor "pukename Cman_UseCursor"
+alias cman_movecursorforward "pukename Cman_MoveCursorForward"
+alias cman_movecursorback "pukename Cman_MoveCursorBack"
+alias cman_switchdrawingmode "pukename Cman_SwitchDrawingMode"
+alias cman_togglecursorlock "pukename Cman_ToggleCursorLock"
+alias cman_play "closemenu; pukename Cman_PlayInEditor"
+alias cman_refresh "closemenu; pukename Cman_RefreshEditor"
+alias cman_export "closemenu; pukename Cman_Export"
+alias cman_warp "closemenu; pukename Cman_WarpToPath"
+
+addmenukey "Open menu" cman_menu
+addmenukey "Use cursor" cman_usecursor
+addmenukey "Move cursor forward" cman_movecursorforward
+addmenukey "Move cursor back" cman_movecursorback
+addmenukey "Switch drawing mode" cman_switchdrawingmode
+addmenukey "Toggle cursor lock" cman_togglecursorlock
+addmenukey "Play" cman_play
