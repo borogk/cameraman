@@ -1,4 +1,4 @@
-VERSION := v1.4.0-alpha4
+VERSION := v1.4.0-alpha5
 
 GO_BIN ?= go
 ACC_BIN ?= acc
