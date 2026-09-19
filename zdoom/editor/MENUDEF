@@ -83,7 +83,7 @@ OptionMenu "CmanOptionsMenu"
 
     StaticText ""
     StaticText "-----------------------------------------", "darkgrey"
-    StaticText "Cameraman Editor v1.4.0-alpha5", "darkgrey"
+    StaticText "Cameraman Editor v1.4.0-alpha6", "darkgrey"
     StaticText "https://github.com/borogk/cameraman", "darkgrey"
     StaticText "-----------------------------------------", "darkgrey"
 }
