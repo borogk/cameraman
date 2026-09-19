@@ -20,6 +20,7 @@ func main() {
 		"+noclip2",
 		"+notarget",
 		"+god",
+		"+r_drawplayersprites", "0",
 		"-stdout",
 	}
 
