@@ -87,7 +87,7 @@ func parseCameraProfile(filePath string) ([]string, error) {
 			name := submatch[1]
 			value := submatch[2]
 			if allowedCvarNames[name] {
-				args = append(args, "+cman_"+name, value)
+				args = append(args, fmt.Sprintf("+cman_%s %s", name, value))
 			} else {
 				fmt.Printf("skipping non-Cameraman CVAR %s\n", name)
 			}

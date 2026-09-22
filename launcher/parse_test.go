@@ -31,9 +31,9 @@ func TestParseLaunchArgs_OnlyLoadArgs(t *testing.T) {
 	assertNoError(t, err)
 
 	assertArrayEquals(t, []string{
-		"+cman_x0", "0.0",
-		"+cman_x1", "0.1",
-		"+cman_x2", "0.2",
+		"+cman_x0 0.0",
+		"+cman_x1 0.1",
+		"+cman_x2 0.2",
 		"+pukename", "Test_Script",
 	}, args)
 }
@@ -50,9 +50,9 @@ func TestParseLaunchArgs_BothUserAndLoadArgs(t *testing.T) {
 
 	assertArrayEquals(t, []string{
 		"-iwad", "doom2", "-file", "sunlust.wad",
-		"+cman_x0", "0.0",
-		"+cman_x1", "0.1",
-		"+cman_x2", "0.2",
+		"+cman_x0 0.0",
+		"+cman_x1 0.1",
+		"+cman_x2 0.2",
 		"+pukename", "Test_Script",
 	}, args)
 }
@@ -113,36 +113,36 @@ func TestParseLaunchArgs_EveryAllowedCvar(t *testing.T) {
 	assertNoError(t, err)
 
 	assertArrayEquals(t, []string{
-		"+cman_path_mode", "0",
-		"+cman_speed_mode", "1",
-		"+cman_angle_mode", "2",
-		"+cman_delay", "500",
-		"+cman_speed", "1000",
-		"+cman_overshoot", "0",
-		"+cman_warp_player", "1",
-		"+cman_hide_player", "1",
-		"+cman_ga_buffer_len", "128",
-		"+cman_x0", "0.0",
-		"+cman_x1", "0.1",
-		"+cman_x2", "0.2",
-		"+cman_y0", "1.0",
-		"+cman_y1", "1.1",
-		"+cman_y2", "1.2",
-		"+cman_z0", "2.0",
-		"+cman_z1", "2.1",
-		"+cman_z2", "2.2",
-		"+cman_a0", "3.0",
-		"+cman_a1", "3.1",
-		"+cman_p0", "4.0",
-		"+cman_p1", "4.1",
-		"+cman_ra0", "5.0",
-		"+cman_ra1", "5.1",
-		"+cman_cx0", "6.0",
-		"+cman_cx1", "6.1",
-		"+cman_cy0", "7.0",
-		"+cman_cy1", "7.1",
-		"+cman_r0", "8.0",
-		"+cman_r1", "8.1",
+		"+cman_path_mode 0",
+		"+cman_speed_mode 1",
+		"+cman_angle_mode 2",
+		"+cman_delay 500",
+		"+cman_speed 1000",
+		"+cman_overshoot 0",
+		"+cman_warp_player 1",
+		"+cman_hide_player 1",
+		"+cman_ga_buffer_len 128",
+		"+cman_x0 0.0",
+		"+cman_x1 0.1",
+		"+cman_x2 0.2",
+		"+cman_y0 1.0",
+		"+cman_y1 1.1",
+		"+cman_y2 1.2",
+		"+cman_z0 2.0",
+		"+cman_z1 2.1",
+		"+cman_z2 2.2",
+		"+cman_a0 3.0",
+		"+cman_a1 3.1",
+		"+cman_p0 4.0",
+		"+cman_p1 4.1",
+		"+cman_ra0 5.0",
+		"+cman_ra1 5.1",
+		"+cman_cx0 6.0",
+		"+cman_cx1 6.1",
+		"+cman_cy0 7.0",
+		"+cman_cy1 7.1",
+		"+cman_r0 8.0",
+		"+cman_r1 8.1",
 		"+pukename", "Test_Script",
 	}, args)
 }
@@ -160,9 +160,9 @@ func TestParseLaunchArgs_SkipUnallowedCvars(t *testing.T) {
 	assertNoError(t, err)
 
 	assertArrayEquals(t, []string{
-		"+cman_x0", "0.0",
-		"+cman_x1", "0.1",
-		"+cman_x2", "0.2",
+		"+cman_x0 0.0",
+		"+cman_x1 0.1",
+		"+cman_x2 0.2",
 		"+pukename", "Test_Script",
 	}, args)
 }
@@ -181,9 +181,9 @@ func TestParseLaunchArgs_SkipNonCvars(t *testing.T) {
 	assertNoError(t, err)
 
 	assertArrayEquals(t, []string{
-		"+cman_x0", "0.0",
-		"+cman_x1", "0.1",
-		"+cman_x2", "0.2",
+		"+cman_x0 0.0",
+		"+cman_x1 0.1",
+		"+cman_x2 0.2",
 		"+pukename", "Test_Script",
 	}, args)
 }
