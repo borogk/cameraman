@@ -9,9 +9,9 @@ This is a mod for ZDoom, which helps to perform camerawork in-engine.
 
 | File name                                                                                                                                                  | Platform    |
 |------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------|
-| [cameraman-v1.4.0-alpha6-windows-amd64.zip](https://github.com/borogk/cameraman/releases/download/v1.4.0-alpha6/cameraman-v1.4.0-alpha6-windows-amd64.zip) | Windows x64 |
-| [cameraman-v1.4.0-alpha6-linux-amd64.zip](https://github.com/borogk/cameraman/releases/download/v1.4.0-alpha6/cameraman-v1.4.0-alpha6-linux-amd64.zip)     | Linux x64   |
-| [cameraman-v1.4.0-alpha6-macos-arm64.zip](https://github.com/borogk/cameraman/releases/download/v1.4.0-alpha6/cameraman-v1.4.0-alpha6-macos-arm64.zip)     | macOS ARM64 |
+| [cameraman-v1.4.0-alpha7-windows-amd64.zip](https://github.com/borogk/cameraman/releases/download/v1.4.0-alpha7/cameraman-v1.4.0-alpha7-windows-amd64.zip) | Windows x64 |
+| [cameraman-v1.4.0-alpha7-linux-amd64.zip](https://github.com/borogk/cameraman/releases/download/v1.4.0-alpha7/cameraman-v1.4.0-alpha7-linux-amd64.zip)     | Linux x64   |
+| [cameraman-v1.4.0-alpha7-macos-arm64.zip](https://github.com/borogk/cameraman/releases/download/v1.4.0-alpha7/cameraman-v1.4.0-alpha7-macos-arm64.zip)     | macOS ARM64 |
 
 ## What is Cameraman?
 
