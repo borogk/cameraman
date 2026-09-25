@@ -1,6 +1,6 @@
-# Cameraman
+![Cameraman](docs/img/cameraman.png)
 
-This is a mod for ZDoom, which helps to perform camerawork in-engine.
+![demo.gif](docs/img/demo.gif)
 
 ## Downloads
 
@@ -15,16 +15,15 @@ This is a mod for ZDoom, which helps to perform camerawork in-engine.
 
 ## What is Cameraman?
 
-**Cameraman** is a mod for [ZDoom](https://zdoom.org/) family of source ports.
-
-Use it to create camera profiles, play them back in-engine and capture as clips for your videos or movies!
+**Cameraman** is a mod for [ZDoom](https://zdoom.org/) family of source ports. 
+Use it to create camera profiles, play them back in-engine and capture as clips for your videos or movies.
 
 Possible use cases:
 
 1. Make trailers for Doom engine maps and mods
-2. Create machinima in Doom engine
-3. Capture Doom gameplay from 3rd person
-4. _...other creative uses you may think of!_
+2. Create machinima in the Doom engine
+3. Capture Doom gameplay from the 3rd person
+4. _Other creative uses you may think of!_
 
 ## Manual
 
