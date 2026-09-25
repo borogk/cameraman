@@ -1,5 +1,0 @@
-actor CmanCamera
-{
-    +NOGRAVITY
-    +NOCLIP
-}
