@@ -1,11 +1,11 @@
-![Cameraman](docs/img/cameraman.png)
+# Cameraman
+
+**Cameraman** is a mod for [ZDoom](https://zdoom.org/) family of source ports.
+Use it to draw camera paths, play them back in-engine and capture as clips for your videos or movies.
 
 ![demo.gif](docs/img/demo.gif)
 
 ## Downloads
-
-> [!WARNING]
-> Binaries listed below are unsigned and might trigger a security warning.
 
 | File name                                                                                                                                                  | Platform    |
 |------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------|
@@ -13,14 +13,11 @@
 | [cameraman-v1.4.0-alpha7-linux-amd64.zip](https://github.com/borogk/cameraman/releases/download/v1.4.0-alpha7/cameraman-v1.4.0-alpha7-linux-amd64.zip)     | Linux x64   |
 | [cameraman-v1.4.0-alpha7-macos-arm64.zip](https://github.com/borogk/cameraman/releases/download/v1.4.0-alpha7/cameraman-v1.4.0-alpha7-macos-arm64.zip)     | macOS ARM64 |
 
-## What is Cameraman?
-
-**Cameraman** is a mod for [ZDoom](https://zdoom.org/) family of source ports. 
-Use it to create camera profiles, play them back in-engine and capture as clips for your videos or movies.
+## Why use it?
 
 Possible use cases:
 
-1. Make trailers for Doom engine maps and mods
+1. Make trailers for Doom maps and mods
 2. Create machinima in the Doom engine
 3. Capture Doom gameplay from the 3rd person
 4. _Other creative uses you may think of!_
