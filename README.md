@@ -7,11 +7,11 @@ Use it to draw camera paths, play them back in-engine and capture as clips for y
 
 ## Downloads
 
-| File name                                                                                                                                                  | Platform    |
-|------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------|
-| [cameraman-v1.4.0-alpha7-windows-amd64.zip](https://github.com/borogk/cameraman/releases/download/v1.4.0-alpha7/cameraman-v1.4.0-alpha7-windows-amd64.zip) | Windows x64 |
-| [cameraman-v1.4.0-alpha7-linux-amd64.zip](https://github.com/borogk/cameraman/releases/download/v1.4.0-alpha7/cameraman-v1.4.0-alpha7-linux-amd64.zip)     | Linux x64   |
-| [cameraman-v1.4.0-alpha7-macos-arm64.zip](https://github.com/borogk/cameraman/releases/download/v1.4.0-alpha7/cameraman-v1.4.0-alpha7-macos-arm64.zip)     | macOS ARM64 |
+| File name                                                                                                                             | Platform    |
+|---------------------------------------------------------------------------------------------------------------------------------------|-------------|
+| [cameraman-v1.4.0-windows-amd64.zip](https://github.com/borogk/cameraman/releases/download/v1.4.0/cameraman-v1.4.0-windows-amd64.zip) | Windows x64 |
+| [cameraman-v1.4.0-linux-amd64.zip](https://github.com/borogk/cameraman/releases/download/v1.4.0/cameraman-v1.4.0-linux-amd64.zip)     | Linux x64   |
+| [cameraman-v1.4.0-macos-arm64.zip](https://github.com/borogk/cameraman/releases/download/v1.4.0/cameraman-v1.4.0-macos-arm64.zip)     | macOS ARM64 |
 
 ## Why use it?
 
