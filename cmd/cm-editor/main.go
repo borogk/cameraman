@@ -16,11 +16,11 @@ func main() {
 
 	args := []string{
 		"-file", editorModulePath,
-		"+freelook", "1",
 		"+noclip2",
 		"+notarget",
 		"+god",
-		"+r_drawplayersprites", "0",
+		"+r_drawplayersprites 0",
+		"+sv_freelook 2",
 		"-stdout",
 	}
 
