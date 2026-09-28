@@ -34,7 +34,7 @@ func TestParseLaunchArgs_OnlyLoadArgs(t *testing.T) {
 		"+cman_x0 0.0",
 		"+cman_x1 0.1",
 		"+cman_x2 0.2",
-		"+pukename", "Test_Script",
+		"+pukename Test_Script",
 	}, args)
 }
 
@@ -53,7 +53,7 @@ func TestParseLaunchArgs_BothUserAndLoadArgs(t *testing.T) {
 		"+cman_x0 0.0",
 		"+cman_x1 0.1",
 		"+cman_x2 0.2",
-		"+pukename", "Test_Script",
+		"+pukename Test_Script",
 	}, args)
 }
 
@@ -143,7 +143,7 @@ func TestParseLaunchArgs_EveryAllowedCvar(t *testing.T) {
 		"+cman_cy1 7.1",
 		"+cman_r0 8.0",
 		"+cman_r1 8.1",
-		"+pukename", "Test_Script",
+		"+pukename Test_Script",
 	}, args)
 }
 
@@ -163,7 +163,7 @@ func TestParseLaunchArgs_SkipUnallowedCvars(t *testing.T) {
 		"+cman_x0 0.0",
 		"+cman_x1 0.1",
 		"+cman_x2 0.2",
-		"+pukename", "Test_Script",
+		"+pukename Test_Script",
 	}, args)
 }
 
@@ -184,7 +184,7 @@ func TestParseLaunchArgs_SkipNonCvars(t *testing.T) {
 		"+cman_x0 0.0",
 		"+cman_x1 0.1",
 		"+cman_x2 0.2",
-		"+pukename", "Test_Script",
+		"+pukename Test_Script",
 	}, args)
 }
 

@@ -62,7 +62,7 @@ func ParseLaunchArgs(args []string, loadScriptName string) ([]string, error) {
 		}
 
 		userArgs := args[3:]
-		cmanArgs = append(cmanArgs, "+pukename", loadScriptName)
+		cmanArgs = append(cmanArgs, fmt.Sprintf("+pukename %s", loadScriptName))
 		return append(userArgs, cmanArgs...), nil
 	}
 
