@@ -7,7 +7,7 @@ import (
 	"regexp"
 )
 
-var cvarRegexp = regexp.MustCompile("^(\\w+) = (.*)$")
+var cvarRegexp = regexp.MustCompile("^(\\w+) = (([+-]?\\d+)(\\.\\d+)?)$")
 var allowedCvarNames = make(map[string]bool)
 var allowedCvarNamesRaw = []string{
 	"path_mode",
@@ -62,7 +62,7 @@ func ParseLaunchArgs(args []string, loadScriptName string) ([]string, error) {
 		}
 
 		userArgs := args[3:]
-		cmanArgs = append(cmanArgs, "+pukename", loadScriptName)
+		cmanArgs = append(cmanArgs, fmt.Sprintf("+pukename %s", loadScriptName))
 		return append(userArgs, cmanArgs...), nil
 	}
 
@@ -83,7 +83,7 @@ func parseCameraProfile(filePath string) ([]string, error) {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		submatch := cvarRegexp.FindStringSubmatch(scanner.Text())
-		if len(submatch) == 3 {
+		if len(submatch) == 5 {
 			name := submatch[1]
 			value := submatch[2]
 			if allowedCvarNames[name] {

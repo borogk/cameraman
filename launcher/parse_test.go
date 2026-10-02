@@ -34,7 +34,7 @@ func TestParseLaunchArgs_OnlyLoadArgs(t *testing.T) {
 		"+cman_x0 0.0",
 		"+cman_x1 0.1",
 		"+cman_x2 0.2",
-		"+pukename", "Test_Script",
+		"+pukename Test_Script",
 	}, args)
 }
 
@@ -53,7 +53,7 @@ func TestParseLaunchArgs_BothUserAndLoadArgs(t *testing.T) {
 		"+cman_x0 0.0",
 		"+cman_x1 0.1",
 		"+cman_x2 0.2",
-		"+pukename", "Test_Script",
+		"+pukename Test_Script",
 	}, args)
 }
 
@@ -143,7 +143,7 @@ func TestParseLaunchArgs_EveryAllowedCvar(t *testing.T) {
 		"+cman_cy1 7.1",
 		"+cman_r0 8.0",
 		"+cman_r1 8.1",
-		"+pukename", "Test_Script",
+		"+pukename Test_Script",
 	}, args)
 }
 
@@ -163,7 +163,7 @@ func TestParseLaunchArgs_SkipUnallowedCvars(t *testing.T) {
 		"+cman_x0 0.0",
 		"+cman_x1 0.1",
 		"+cman_x2 0.2",
-		"+pukename", "Test_Script",
+		"+pukename Test_Script",
 	}, args)
 }
 
@@ -184,8 +184,89 @@ func TestParseLaunchArgs_SkipNonCvars(t *testing.T) {
 		"+cman_x0 0.0",
 		"+cman_x1 0.1",
 		"+cman_x2 0.2",
-		"+pukename", "Test_Script",
+		"+pukename Test_Script",
 	}, args)
+}
+
+func TestParseLaunchArgs_AllowPositiveAndNegativeCvars(t *testing.T) {
+	cmanFile := testCmanFile(
+		"x0 = -1",
+		"x1 = -0.1",
+		"y0 = +2",
+		"y1 = +0.2",
+	)
+
+	args, err := ParseLaunchArgs([]string{"cm-editor", "load", cmanFile}, "Test_Script")
+	assertNoError(t, err)
+
+	assertArrayEquals(t, []string{
+		"+cman_x0 -1",
+		"+cman_x1 -0.1",
+		"+cman_y0 +2",
+		"+cman_y1 +0.2",
+		"+pukename Test_Script",
+	}, args)
+}
+
+func TestParseLaunchArgs_AllowAlternativelyFormattedNumbers(t *testing.T) {
+	cmanFile := testCmanFile(
+		"x0 = 00",
+		"x1 = 00.1",
+		"x2 = 00.20",
+		"y0 = 001",
+		"y1 = +002",
+		"y2 = -003",
+		"z0 = +0",
+		"z1 = -0",
+		"z2 = +1",
+	)
+
+	args, err := ParseLaunchArgs([]string{"cm-editor", "load", cmanFile}, "Test_Script")
+	assertNoError(t, err)
+
+	assertArrayEquals(t, []string{
+		"+cman_x0 00",
+		"+cman_x1 00.1",
+		"+cman_x2 00.20",
+		"+cman_y0 001",
+		"+cman_y1 +002",
+		"+cman_y2 -003",
+		"+cman_z0 +0",
+		"+cman_z1 -0",
+		"+cman_z2 +1",
+		"+pukename Test_Script",
+	}, args)
+}
+
+func TestParseLaunchArgs_SkipMisformattedNumbers(t *testing.T) {
+	cmanFile := testCmanFile(
+		"x0=0.0",
+		"x0= 0.1",
+		"x0 =0.2",
+		"x0  =  0.3",
+		"x0 = 0.4 = 0.4",
+		"x0 = .5",
+		"x0 = ..6",
+		"x0 = 0..7",
+		"x0 = 0.8.",
+		"x0 = 0.9.9",
+		"x0 = 1.",
+		"x0 = 2..",
+		"x0 = 2..",
+		"x0 = 2..",
+		"x0 = 3a",
+		"x0 = a4",
+		"x0 = a5b",
+		"x0 = ++6",
+		"x0 = +-7",
+		"x0 = -+8",
+		"x0 = --9",
+	)
+
+	args, err := ParseLaunchArgs([]string{"cm-editor", "load", cmanFile}, "Test_Script")
+	assertNoError(t, err)
+
+	assertArrayEquals(t, []string{"+pukename Test_Script"}, args)
 }
 
 func testCmanFile(lines ...string) string {
