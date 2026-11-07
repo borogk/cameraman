@@ -49,7 +49,7 @@ Cameraman is compatible with all major branches of ZDoom:
 
 ## DSDA-Doom engine compatibility (via cm-doom)
 
-[cm-doom](https://github.com/borogk/cm-doom) is a special fork of [dsda-doom](https://github.com/kraflab/dsda-doom) with Cameraman support in mind.
+[cm-doom](https://github.com/borogk/cm-doom) is a special fork of [DSDA-Doom](https://github.com/kraflab/dsda-doom) with Cameraman support in mind.
 
 It doesn't have an editor component like **Cameraman**, instead it should be used alongside it:
 
